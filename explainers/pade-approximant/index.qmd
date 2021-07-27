@@ -1,0 +1,21 @@
+---
+title: "Padé Approximants"
+from: markdown+emoji
+---
+
+tl;dr: instead of approximating something with a polynomial (something like
+Taylor series), we approximate it with a rational
+function. Presumably this works better when your function has a pole,
+because you can match the pole of the function to the pole of the
+rational approximation. 
+
+Supposedly these approximations also work better than Taylor series
+for the same order of polynomial/rational function. That shouldn't be
+surprising, since polynomials are a subset of rational functions.
+
+Obviously I don't understand them at all so I'm just going to plot some
+Padé approximants instead :shrug: :
+
+<div id="pade-approximant"></div>
+
+<script type="module" src="./index.js"></script>

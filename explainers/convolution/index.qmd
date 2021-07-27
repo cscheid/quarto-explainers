@@ -1,0 +1,90 @@
+---
+title: Convolution
+---
+
+The _convolution_ is an operation that shows up very commonly in
+signal processing. It takes two functions as input and produces
+another function as the output. Here, we will use $\star$ to denote
+the operation, so we will think of $f \star g$ as producing a new
+function. The simplest definition of convolution is given element-wise:
+
+$$(f \star g)(x) = \int_{-\infty}^\infty f(\tau)g(x - \tau) d\tau$$
+
+Unpacking this a little bit, each specific element of the domain of $f
+\star g$ is given by an integral over the entire real line. The
+integral operation is effectively a comparison between $f$ and a
+flipped, shifted version of $g$, where the amount by which we shift
+$g$ is the parameter for the convolution. (We say "comparison" here in
+a specific sense: $\int_{-\infty}^\infty f(x) g(x) dx$ is a way to
+give a legitimate inner product to the vector space of functions [^1],
+and a good way to think of inner products is as a "similarity" between
+two objects.)
+
+This is much easier to understand with simple examples.
+
+## Moving averages
+
+<div id="f-chart" class="widechart"></div>
+
+<div id="g-chart" class="widechart"></div>
+
+<div id="fg-chart" class="widechart"></div>
+
+Often, we will think of one of the functions as a _filter_ that
+changes the other function. In the example above, the rectangle
+function $g$ serves as a "local average", which the convolution
+operation "spreads" throughout the domain of $f$.
+
+(TODO: animate the rectangle sliding over $f$ on the bottom as
+the user hovers)
+
+## Smoothing filters
+
+Taking a rectangle and convolving it with itself makes a progressively
+smoother function:
+
+<div id="bspline0a-chart" class="widechart"></div>  
+<div id="bspline1-chart" class="widechart"></div>  
+<div id="bspline2-chart" class="widechart"></div>  
+<div id="bspline3-chart" class="widechart"></div>
+
+## Properties
+
+* Convolution is commutative $f \star g = g \star f$; this means that
+  you can choose any of the two functions to interpret at the "one
+  which is shifting".
+  
+* Convolution distributes with function sum; $f \star (g + h) = f
+  \star g + f \star h$.
+  
+* Convolution is associative: $f \star (g \star h) = (f \star g) \star
+  h$, and so we just write $f \star g \star h$ without risk of
+  ambiguity. This also lets us replace repeated convolutions with
+  different filters with a single convolution of the convolution of
+  the filters. This is an important idea.
+
+* The derivative of a convolution factors to _either_ function. Using $Df = D(f)(t) = (df/dx)(t)$,
+  we have that $D(f \star g)/dx = Df \star g = f \star Dg$. Using our filter
+  interpretation above, this means that the derivative of the filtered
+  function is the convolution of the function with the derivative of
+  the filter. This is also an important idea.
+
+* If you define $If = I(f)(x)= \int_{-\infty}^{x} f(y) dy$ as the operator 
+  that integrates a function, then $I$ also factors in the same way as above:
+  $I(f \star g) = I(f) \star g = f \star I(g)$. Combined, these two properties allow us
+  to, under a convolution cancel integrations on $f$ with
+  derivatives on $g$ and vice-versa. Since $I(D(f)) = f = D(I(f))$, clearly we have
+  $I(f) \star D(g) = f \star I(D(g)) = f \star g$, etc.
+
+[^1]: If you want to be mathematically precise about it, this definition of inner product only works in a slightly more complicated setting, because some functions can differ in small number of places and still have the same inner products. This is handled by sending functions into appropriate equivalence classes.
+
+```{ojs}
+//| output: false
+//| echo: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { main } from "./main.js";
+{
+  cscheid.setup.setupGlobals({ d3 });
+  main();
+}
+```

@@ -1,0 +1,19 @@
+---
+title: Bilinear interpolation
+echo: false
+---
+
+<script src="../../js/lux.js"></script>
+<script src="../../js/jquery-2.1.1.min.js"></script>
+<div id="bilinear"></div>
+
+```{ojs}
+//| output: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { main } from "./main.js";
+{
+  debugger;
+  cscheid.setup.setupGlobals({ d3 });
+  main();
+}
+```

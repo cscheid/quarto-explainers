@@ -1,0 +1,65 @@
+---
+title: Explainers
+---
+
+This is a collection of small explanatory notes and interactive demos. They started
+with a focus on data science, but have sprawled into "math and CS explainers".
+
+These notes are probably more informal than what you may be
+expecting. If you're looking for textbooks, I'm sure you can find
+excellent ones.
+
+## Basics
+
+* [Trigonometry](trigonometry/index.qmd)
+* [Linear Regression](linear-regression.qmd)
+
+## Supervised Learning
+
+Methods which use data to make predictions about new, unseen data.
+
+* [Logistic Regression](logistic-regression/index.qmd)
+* [Support Vector Machines](svm/index.qmd)
+* [Error-correcting output codes](error-correcting-output-codes/index.qmd)
+* [$k$-nearest neighbor classification](nearest-neighbors/index.qmd)
+* [Perceptron](perceptron/index.qmd)
+
+## Unsupervised Learning
+
+Methods which, given a dataset that has a complex representation,
+create simpler versions of the dataset.
+
+* [Principal Components Analysis](pca.qmd)
+* [Multidimensional Scaling](mds.qmd)
+* [$k$-means](kmeans/index.qmd)
+
+## Linear Algebra
+
+* [Singular Value Decomposition](svd.qmd)
+* [Adjoints and Inverses](adjoints-and-inverses.qmd)
+* [Eigenwhat?](eigenvectors/index.qmd)
+
+## Other
+
+* [Regularization](regularization/index.qmd)
+* [A simple illustration of duality](duality.qmd)
+* [Convolutions](convolution/index.qmd)
+* [Automatic Differentiation](automatic-differentiation/index.qmd)
+* [Randomized Response](randomized-response/index.qmd)
+
+## Data visualization
+
+* Function fitting and reconstruction:
+  * [B-Splines](b-splines/index.qmd). Intro to B-Splines.
+  * [Linear Function Spaces](linear-function-spaces/index.qmd). Brief
+    intro to using linear function spaces and reconstruction kernels to
+    represent continuous functions in a computer.
+  * [Lagrange's interpolating polynomials](lagrange-polynomials.qmd).
+  * [Newton's interpolating polynomials](newton-polynomials.qmd).
+  * [Padé approximants](pade-approximant/index.qmd).
+* [ODE integration](odes/index.qmd). Intro to numerical integration
+  of ordinary differential equations.
+
+## Signal Processing
+
+* [Aliasing](aliasing.qmd). A simple illustration of aliasing.

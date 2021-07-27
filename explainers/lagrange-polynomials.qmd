@@ -1,0 +1,100 @@
+---
+title: Lagrange Polynomials
+---
+
+Given a set of $n$ points $(x_i, y_i)$, we can create a polynomial
+$f(x)$ of degree at most $n-1$ such that $f(x_i) = y_i$. Although
+it's almost always better to do this through plain [linear
+regression](linear-regression.qmd), it's sometimes useful to know
+this can be done.
+
+In addition, the trick that we use to generate the polynomial is
+useful in other settings, and gives a different perspective on other
+data-fitting methods.
+
+
+### Prologue: Determining roots is easy
+
+If all we wanted was to find a non-trivial polynomial with given
+roots, then that would be dead simple. For every value $x_i$ for
+which we wanted the polynomial to be zero, we create a term $(x -
+x_i)$, and then take the product of all of those, since if any of the
+terms are zero, the product is zero.
+
+But for this interpolating polynomial, we don't want the values to be
+zero; we want them to be $y_i$. The Lagrange polynomials are built on
+a simple extension of this idea (if you were to take the $(x - x_i)$
+trick more directly head on, you would probably arrive at the idea of
+[Newton's interpolating polynomial](newton-polynomials.qmd)).
+
+
+## Polynomials are vector spaces, and that's almost all we need
+
+It's useful to think polynomials as linear combinations of the
+monomials $x \mapsto x^k$, and (for example) subsets of those
+monomials forming different spaces. In this sense, the set $\{x
+\mapsto x^0, x \mapsto x^1, x \mapsto x^2\}$ forms a *basis* for all
+quadratic polynomials, since we can form any quadratic polynomial by
+weighting the basis vectors and adding them up.
+
+But we can take linear combinations of *any* sets of polynomials to
+create other vector (sub) spaces. For example, the set $\{(1-x)^0,
+(1-x), (1-x)^2\}$ *also* forms a basis for all quadratic polynomials;
+the only difference is that in order to express a quadratic in this
+basis, we need different weights than the monomial basis.
+
+The Lagrange interpolating polynomial is easiest to study by
+describing how to think of the basis it creates.
+
+Imagine first if we had polynomials $b_i$ for each input point
+$x_i$, such that $b_i(x_i) = 1$, and if $i \neq j$, $b_i(x_j) =
+0$. If that were the case, then we could just use $y_i$ as the
+weights for combining the $b_i$ polynomials: $f(x) = \sum_i y_i
+b_i(x)$. At a given $x_i$ point, all but $b_i$ is non-zero, which
+when multiplied by $y_i$ instantly gives $f(x_i) = y_i$.
+
+So all that's left is for us to find a way to construct these
+polynomials. That turns out not to be too difficult. Let's say we have
+three points, $(x_0 = 1, y_0 = 3)$, $(x_1 = 3, y_1 = 6)$, and
+$(x_2 = 5, y_2 = 2)$. We need $b_0(1) = 1$, $b_0(3) = 0$, $b_0(5) =
+0$.  As we've seen before, it's easy to create a polynomial if all we
+need to do is control its roots.  In this case, $\tilde{b}_0(x) = (x -
+3)(x - 5)$ guarantees that the polynomial is zero exactly where we
+need it to be zero.  Unfortunately, $\tilde{b}_0(1)$ is not equal to
+one. But we know it is equal to $(1-3)(1-5)$. So we simply divide
+$\tilde{b}_0$ by that, which doesn't change the value at the roots
+since they were zero anyway. Do the same thing for $b_1$ and $b_2$,
+and then add all three of them together, and you get the Lagrange
+polynomial.
+
+## Why do we care?
+
+The generalizable principle here is that any time we fit functions to
+observations, it's worth it to study the procedure by understanding
+what it does to datasets where the function is equal to $1$ at one of
+the points equal to $0$ elsewhere, because this usually creates a
+basis in the sense of linear algebra: a finite set of elements whose
+linear combinations covers ("spans") the set of all possible elements
+we're concerned with.
+
+In the case of Lagrange's polynomials, this basis is *data-dependent*:
+more specifically, the basis changes as a function of the $x$
+coordinates of the inputs, and the weights change as a function of the $y$
+coordinates of the inputs. Seeing the method in this perspective lets us better understand its
+behavior.
+
+For example, in this case, we see that sufficiently far away from the
+points $x_i$, this function will grow without bounds, because each of
+the $b_i$ basis functions grows to infinity by themselves; this makes
+Lagrange polynomials especially risky to use as *extrapolation*
+methods. Other methods have different such properties.
+
+For example, one way to think of
+[LOWESS](https://en.wikipedia.org/wiki/Local_regression) is that it
+forces these basis functions to be zero by multiplying the polynomial
+by a function that goes to zero away from the points at a rate faster
+than the polynomials grow.
+
+## Demo
+
+TBF.

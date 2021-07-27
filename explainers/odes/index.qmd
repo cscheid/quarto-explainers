@@ -1,0 +1,206 @@
+---
+title: Integrating Ordinary Differential Equations Numerically
+---
+
+# Integrating ODEs Numerically
+
+This is a brief introduction to methods for finding numerical
+solutions to initial value problems in ordinary differential
+equations. This piece is biased towards the main application of
+interest for me, namely computing streamlines of vector fields.
+
+# Basics
+
+Consider the vector field below.
+
+<div id="vf1" class="small-square-chart"></div>  
+  
+The problem we are going to solve is that of computing *integral
+lines*, curves that are everywhere tangent to the vector field. More
+concretely, we are given a vector field $v: R^2 \to R^2$ and are
+looking for a parametric curve given by two functions of $t$, $x(t),
+y(t)$ such that the initial value is given: $x(0)=x_0$, $y(0) = y_0$,
+and the tangent vector of the curve is equal to the vector
+field. Concretely speaking, we want that, at all values of $t$,
+$v(x(t),y(t)) = (x'(t), y'(t))$ (we're using $f'$ to denote the
+derivative of $f$ with respect to $t$ specifically).
+
+This particular vector field has an analytical definition, $v(x, y) =
+(\cos(x + 2y), \sin(x - 2y))$. That we can write down a simple
+equation for it does not help very much in this case, because
+generally speaking, it will be hopeless to find a closed-form solution
+for all but the simplest initial value problems. So what we look for
+instead is a *numerical approximation* of the continuous curve $x(t),
+y(t)$ by a finite set of samples.
+
+## Euler integration
+
+Euler integration is by far the simplest method for solving ODEs
+numerically. The idea behind Euler integration is very simple: if at
+a given point we know the value of a vector field, and the vector
+field is continuous, then we expect it to not change very much in the
+neighborhood. More drastically, we assume it's locally constant, so we
+can a step in the direction of the vector field. That lands us in a
+new spot in the plane, from which we sample the vector field again,
+and so on. The only free parameter is the size of the step we take,
+which we call $h$ here:
+
+    def euler_integration(vector_field, initial_x, initial_y, h):
+        t = 0
+        px = initial_x
+        py = initial_y
+        while True:
+            report_point(px, py, t)
+            (vx, vy) = vector_field(px, py)
+            px += vx * h
+            py += vy * h
+            t += h
+
+(In practice, of course, we'd stop the process with some criterion)
+At first sight, this seems a reasonable way to compute approximations:
+as $h$ gets smaller, we take smaller steps, and if the vector field is
+continuous, then we should expect Euler integration to get
+progressively better. Here's an example. Drag the black circle around
+to see different curves approximated with Euler integration:
+
+<div id="vf2" class="small-square-chart"></div>  
+
+Things seem ok, right? But look at what happens when we try this much
+simpler vector field:
+
+<div id="vf3" class="small-square-chart"></div>
+
+This is the vector field $v(x,y) = (-y, x)$. The integral lines of
+this vector field are circles (this is easy to see from $\cos' =
+-\sin, \sin' = \cos$), but the approximation lines we get from Euler's
+integration are spirals. Intuitively, this is relatively easy to
+understand: a finite step along the vector field always increases the
+distance from the origin. More importantly, the *fraction* with which
+the distance from the origin increases is the same at every step (by a simple
+argument of congruent triangles). This means that, as a function of
+$t$, our approximation $\tilde{x}(t), \tilde{y}(t)$ is such that the
+distance from the origin increases *exponentially* as $t$ increases.
+
+This happens for real-world, more complicated vector fields. Consider
+the Lotka-Volterra equations, a pair of non-linear differential equations which 
+model predator-prey relationships, $u' = u(2-v), v' = v (u - 1)$.
+
+The integral lines of this model should be cycles, and yet,
+
+<div id="vf4" class="small-square-chart"></div>
+
+This is a serious problem. But how do we solve it?
+
+## Step-size control
+
+One way to make the solution more accurate is to reduce the size of
+each step.  However, reducing the step size by half doubles the amount
+of points which are used to cover a given interval in $t$.  Note,
+also, that in the Lotka-Volterra example above that the lengths of
+each of the steps can change quite a bit. So if reduce the parameter
+$h$ so that the largest distance between each pair of sampled values
+is small, then the *smallest* distance will be *very* small, which means
+that covering a lot of $t$ will take a huge number of steps.
+
+Instead, we could try to estimate the error we're accruing at every
+step. One estimate of this error is one half of the length of the
+difference between the two consecutive vectors we sampled along the
+vector field, multiplied by $h$ (this comes from a Taylor series
+expansion of the approximations).  So, if we set our parameter to be,
+instead of $h$, a maximum tolerance for error $T$, then we can make
+the steps bigger every time our error estimate says our integration is
+conservative, and make the steps smaller every time our error estimate
+says our integration is too aggressive:
+
+<div id="vf5" class="small-square-chart"></div>
+
+Notice how now the points are more evenly spaced around the curve,
+which means that as we make the step-size smaller, we use our samples
+more efficiently.  Still, it remains the case that no matter how small
+we want our error is, it keeps getting compounded fairly fast. We need
+a different approach.
+
+## Predictor-corrector methods
+
+The first algorithm that is good enough to be used in practice is so
+simple that it's a bit magical. The idea is as follows. At each time
+step, we evaluate the vector field at the current point, which gives a
+future position using the Euler integration rules. Now, instead of
+simply jumping over to that position, we evaluate the vector field
+there, and take the *average* of the two vectors as the vector to use.
+
+    def euler_integration_pc(vector_field, initial_x, initial_y, h):
+        t = 0
+        px = initial_x
+        py = initial_y
+        while True:
+            report_point(px, py, t)
+            (vx,  vy)  = vector_field(px, py)
+            (vx2, vy2) = vector_field(px+h*vx, py+h*vy)
+            px += ((vx + vx2) / 2) * h
+            py += ((vy + vy2) / 2) * h
+            t += h
+
+This seems like a minor change, but notice this:
+
+<div class="chart"><span id="vf6" class="small-inline-square-chart"></span><span id="vf7" class="small-inline-square-chart"></span></div>
+
+Even with a very step size, the accumulation error has
+effectively disappeared! What gives? To get an intuition for the
+situation, let's consider a different algorithm. Imagine that, instead
+of taking the average of `(vx, vy)` and `(vx2, vy2)`, we just took `(vx2, vy2)` as the value:
+
+    def weird_euler_integration(vector_field, initial_x, initial_y, h):
+        t = 0
+        px = initial_x
+        py = initial_y
+        while True:
+            report_point(px, py, t)
+            (vx,  vy)  = vector_field(px, py)
+            (vx2, vy2) = vector_field(px+h*vx, py+h*vy)
+            px += vx2 * h
+            py += vy2 * h
+            t += h
+
+What happens then?
+
+<div class="chart"><span id="vf8" class="small-inline-square-chart"></span><span id="vf9" class="small-inline-square-chart"></span></div>
+
+Now, instead of spiraling away from the center of the cyclic behavior,
+the approximation spirals *into* it. This is intuitively clear in the
+case of the circular vector field: using the vector from the "future" position
+of Euler integration makes the curve "turn too early". Clearly, using
+the vector field from the present position makes the curve "turn too
+late" (since that's the problem with Euler integration to begin with).
+So it must be the case that _some_ average of the two
+approaches cancels the error out. What's not so clear is that the
+correct weight is 1) independent of the actual vector field, and 2)
+equal to $1/2$. While we won't go into the derivation here, the
+easiest way to arrive at it is to first check that the averaging rule
+works assuming that the vector field is a linear function of its
+coordinates, and then generalize by taking appropriate Taylor series:
+you'll get that the error for the method is essentially proportional
+to $h^2$, and to the dominating term of the *quadratic* parameter of
+the Taylor series fit.
+
+## Runge-Kutta methods
+
+What if we want a method that converges well if the vector field has
+significant quadratic terms? We use more sophisticated versions of the
+above idea, probing neighboring values of the vector field and
+averaging them appropriately. The most common such method is known as
+RK4, standing for Runge-Kutta's 4th order method.
+
+TBF.
+
+### Butcher tableaus
+
+TBF.
+
+## Implicit methods
+
+TBF.
+
+# References
+
+1. Butcher, [Numerical Methods for Ordinary Differential Equations](http://onlinelibrary.wiley.com/book/10.1002/9780470753767). Wiley, 2nd ed, 2008. 

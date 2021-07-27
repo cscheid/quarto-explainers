@@ -1,0 +1,262 @@
+---
+title: Principal Components Analysis
+---
+
+Some datasets are naturally *redundant*. Loosely speaking, each
+element of the set contains "more information than necessary". For
+example, imagine that the dataset you're collecting has, in one
+column, daily temperatures in degrees Fahrenheit, and in another
+column, daily temperatures in degrees Celsius. In this case, all of the
+"signal" in these two columns actually happens in a
+*lower-dimensional* portion of the original space.
+
+And since we tend to prefer simpler versions of the dataset, we would
+like to find out how to transform the original dataset to a
+representation with smaller dimension, but still much (or, in the
+extreme example above, all) of the signal. Principal Components
+Analysis is one the most fundamental tools to find such
+transformations.
+
+In order to make things concrete, let's assume that the dataset has
+$m$ elements, each containing $n$ attributes, and that we lay these
+out in a matrix $X$ that has $m$ rows and $n$ columns: $X \in
+R^{m,n}$. 
+
+PCA will return two things that are both useful. First, PCA gives us
+back a smaller version of the dataset: instead of having $n$
+attributes, we will have $k$ attributes, and we will generally choose
+$k$ to be much smaller than $n$. Second, PCA will give us the
+transformation that takes any value in the input space into a value
+in the output space. In addition, this transformation is
+*linear*: a matrix that takes vectors from $n$-dimensional space
+to $k$-dimensional space.
+
+## Two ways to PCA
+
+If you've read about PCA before, you might remember something like
+"the principal components are the eigenvectors of the covariance
+matrix". This statement is true, but it doesn't actually help you
+understand what the PCA is doing. Instead, we will look at the PCA 
+in two ways.
+
+# PCA through the covariance matrix
+
+Given a dataset represented as above, we can define the *covariance*
+between any two attributes of the dataset. If we think of each column
+of the matrix $ X_{*i} = [ x_{0,i}, x_{1,i}, \cdots, x_{n-1,i} ] $ 
+as a vector (storing the values of these attributes),
+then the covariance between any two attributes is given by
+
+$$\Cov[X_{*i}, X_{*j}] = E[(X_{*i} - E[X_{*i}])(X_{*j} - E[X_{*j}])]$$
+
+To make our analysis easier, let's work with a slightly different
+version of the dataset, $\tilde{X}$, where we will subtract the
+average column value from each column: 
+
+$$\tilde{X}_{i,j} = X_{i,j} - E[X_{*i}],$$
+
+and so
+
+$$E[\tilde{X}_{*i}] = 0.$$
+
+Now, it's easy to see that the covariance matrix of $\tilde{X}$ has a
+simpler expression:
+
+$$\begin{align}\Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &=& E[(\tilde{X}_{*i} - E[\tilde{X}_{*i}])(\tilde{X}_{*j} - E[\tilde{X}_{*j}])]\\\Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &=& E[\tilde{X}_{*i} \tilde{X}_{*j}]\\m \Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &=& m \tilde{X}^T \tilde{X}\end{align}$$
+
+$\tilde{X}^T \tilde{X}$ is a symmetric, $n \times n$ matrix. 
+
+Now let's consider the expression $v^T \tilde{X}^T \tilde{X} v$: this is
+equal to $\langle \tilde{X} v, \tilde{X}v \rangle$, and so equal to
+$|| \tilde{X} v ||^2$, which is never a negative value. This means
+$\tilde{X}^T \tilde{X}$ cannot have a negative eigenvalue. It also means that we can then write $\tilde{X}^T \tilde{X}$ as
+
+$$\tilde{X}^T \tilde{X} = U \Lambda U^T,$$
+
+where $U$ is an *orthogonal* matrix (a rotation), and $\Lambda$ is a diagonal matrix of non-negative values, sorted from largest to smallest [^1]. This, in turn, yields:
+
+$$\tilde{X}^T \tilde{X} = U \Lambda^{1/2} \Lambda^{1/2} U^T,$$
+
+Now consider the expression $\tilde{X} U$. This expression rotates all
+of the vectors in $\tilde{X}$ (so that doesn't change the lengths of
+each row vector). But now notice that the above equation leads to
+
+$$\begin{align}U^T \tilde{X}^T \tilde{X} U &=& U^T U \Lambda U^T U\\ U^T \tilde{X}^T \tilde{X} U &=& \Lambda.\end{align}$$
+
+So if we rotate the rows of $\tilde{X}$ by U, *its* covariance matrix
+is diagonal! That means that after rotating $\tilde{X}$ the attribute
+vectors (ie. the columns) are orthogonal to each other.
+
+Now imagine if we created a matrix $\hat{U}$ equal to $U$, except that
+it lacks the very last column. $\hat{U}$ is a projection matrix:
+roughly speaking, it sends vectors from $R^n$ to $R^{n-1}$ in such a
+way that no vector increases in length. In that case $\tilde{X}
+\hat{U}$ will be an $m \times (n-1)$ matrix.
+
+Now, let's think of the *sum of squared lengths of the rows ("sums of
+squares" for short, or SS) in $\tilde{X}\hat{U}$*, and compare to the
+SS of $\tilde{X}$ (which is itself equal to the sum of squares of
+*entries* in each value in the matrix).
+
+The remarkable feature of $\hat{U}$ is that, *among all projection
+matrices from $R^n$ to $R^{n-1}$*, $\hat{U}$ is such that the SS of
+$\tilde{X}\hat{U}$ is as close as possible to the SS of $\tilde{X}$
+itself. This happens, essentially, because **the SS of $\tilde{X}U$ is
+equal to that of $\Lambda^{1/2}$**. Remember that $U$ is a rotation,
+so it doesn't change the squared lengths of the rows: a
+right-multiplication by $U$ doesn't change the SS of $\tilde{X}$!
+
+In other words: among all possible projections which drop a column
+from $\tilde{X}$, we need to pick one that makes the SS of the
+projected matrix equivalent to dropping the smallest value from
+$\Lambda^{1/2}$ --- if we don't, then we could have picked a better
+projection!  In the same way, if we wanted a projection to
+one-dimensional space, then we would pick the first column of $U$,
+because that would corresponds to the largest value in
+$\Lambda^{1/2}$, and so would be the "best" single one-dimensional
+projection (in the sense of preserving sums of squared lengths of the
+dataset).
+
+The $i$-th column of $U$ is known as the **$i$-th principal
+direction**, and the attributes found by multiplying $\tilde{X}$ by
+these columns are the **principal components** of $X$.
+
+The algorithm to compute the principal components of a dataset is, then:
+
+1. Let $X$ be a $m \times n$-dimensional matrix, where each row is an entry from
+   the dataset.
+2. Let $\tilde{X}$ be the matrix where we subtract the column means from each column.
+3. Let $M = \tilde{X}^T \tilde{X}$ be the matrix $M = (m_{ij})$ of covariances between the $i$-th and $j$-th column of $\tilde{X}$. $M$ is an $n \times n$ matrix.
+3. Let $U$ be the matrix such that $M = U \Lambda U^T$, where $U$ is orthogonal, and $\Lambda$ has diagonal entries ordered from largest to smallest.
+4. The principal components of the dataset are (in order) the columns of $\tilde{X} U$.
+
+# PCA through a matrix of inner products
+
+Now, let's consider this seemingly different approach:
+
+1. Let $X$ be a $m \times n$-dimensional matrix, where each row is an entry from the dataset.
+2. Let $\tilde{X}$ be the matrix where we subtract the column means from each column.
+3. Let $M = \tilde{X} \tilde{X}^T$ be the matrix $M = (m_{ij})$ of inner products between the $i$-th and $j$-th rows of $\tilde{X}$. $M$ is an $m \times m$ matrix.
+4. Let $U$ be the matrix such that $M = U \Lambda U^T$, where $U$ is orthogonal, and $\Lambda$ has diagonal entries ordered from largest to smallest.
+5. The principal components of the dataset are (in order) the columns of $U \Lambda^{1/2}$.
+
+Say what? How can these two things be the same?
+
+## PCA via the SVD.
+
+The easiest way to see that these two approaches are identical is to
+consider the **singular value decomposition** (SVD) of $M$. The SVD of
+a matrix is a bit like the eigendecomposition, but it is more general:
+the SVD exists for *any* matrix, rectangular or square, symmetric or
+not. Concretely, the SVD of a $m \times n$ matrix $M$ is 
+
+$$M = U \Sigma V^T,$$
+
+or a set of three matrices: $U$ is an orthogonal $m \times m$ matrix (whose columns are known as the **left singular vectors**);
+$\Sigma$ is a diagonal, rectangular $m \times n$ matrix with
+non-negative, non-increasing values in the diagonal (known as the **singular values**), and $V^T$ is an
+$n \times n$ orthogonal matrix (whose rows are known as the **right singular vectors**). Like the eigendecomposition, the SVD
+has two orthogonal matrices and a diagonal matrix. Unlike the
+eigendecomposition, the orthogonal matrices in the SVD are different
+from each other's transpose, and they might even have different
+dimensions. The entries of the diagonal matrix of the SVD are never
+negative, unlike eigendecomposition. Finally, the SVD of any matrix
+always exists, but even some square matrices lack an
+eigendecomposition.
+
+But enough about the SVD: let's put it to use. Specifically, let's look
+at the SVD of $\tilde{X}$:
+
+$$\begin{align}\tilde{X} &=& U \Sigma V^T \\ \tilde{X} \tilde{X}^T & = & U \Sigma V^T V \Sigma^T U^T \\ \tilde{X}^T \tilde{X} &=& V \Sigma^T U^T U \Sigma V^T \end{align}$$
+
+Since $U$ and $V$ are orthogonal, a lot of terms cancel:
+
+$$\begin{align} \tilde{X} \tilde{X}^T & = & U \Sigma_1^2 U^T \\ \tilde{X}^T \tilde{X} &=& V \Sigma_2^2 V^T \end{align}$$
+
+(We use $\Sigma_1^2$ and $\Sigma_2^2$ to differentiate them since the former
+is $m \times m$, and the latter is $n \times n$.)
+From here, we can see that there are a lot of relationships between
+the SVD of $\tilde{X}$ and the eigendecompositions of
+$\tilde{X}\tilde{X}^T$, and that of $\tilde{X}^T\tilde{X}$.
+Specifically, the singular values of $\tilde{X}$ are equal to the square roots of the eigenvalues of both $\tilde{X}\tilde{X}^T$ and $\tilde{X}^T\tilde{X}$; the left singular vectors of $\tilde{X}$ are the eigenvectors of $\tilde{X}\tilde{X}^T$, and the right singular vectors are the eigenvectors of $\tilde{X}^T\tilde{X}$.
+
+Putting all of these things together, and multiplying both sides of the SVD $\tilde{X} = U \Sigma V^T$ on the right by $V$, we get:
+
+$$\begin{align} \tilde{X} V &=& U \Sigma V^T V \\ \tilde{X} V &=& U \Sigma \end{align}$$
+
+Now the left side of the equation is the result of PCA by
+covariance-matrix algorithm, and the right side of the equation is the
+result of PCA by the inner-product algorithm! So they are truly the
+same thing.
+
+## But why
+
+The computation of the PCA via eigenvectors of covariance matrices is
+much more intuitive, so why do we care about these two different
+approaches? 
+
+The reason is a little strange, but extremely practical. Sometimes, we
+don't have access to the rows or columns of $X$, but we **do** have
+access to the inner products. It is extremely useful to know that in
+these scenarios we can still recover principal components! This is the central insight of [classical multidimensional scaling](mds.html#Classical%20MDS).
+
+## Odds and ends
+
+### The Centering Matrix
+
+The procedure we've used above to convert $X$ to $\tilde{X}$ can be
+represented by a matrix. This is sometimes useful to know, especially
+when the centering operation happens in the middle of other matrix
+manipulation. Specifically, if $H = (I - \vec{1}\vec{1}^T / m)$, where
+$m$ is the number of rows of $X$, and $\vec{1}$ is an
+$m$-dimensional vector of all ones $(1, 1, \cdots, 1)$, then
+
+$$\tilde{X} = H X.$$
+
+It is easy to see why this is the case. Expand the definition:
+
+$$\begin{align}\tilde{X} &=& (I - \vec{1}\vec{1}^T / m) X \\ \tilde{X} &=& X - \vec{1}\vec{1}^T X / m,\end{align}$$
+
+and now note that $\vec{1}^T X$ is a vector that stores the column
+sums of $X$, and so $\vec{1}^T X / m$ stores the column averages. In
+addition, $\vec{1} v$ creates a matrix with $m$ copies of $v$. Putting
+this back into the expression we see that the column averages are
+copied into a matrix of the same size as $X$, and then subtracted from
+$X$ itself.
+
+An interesting feature of the centering matrix is that you can write
+it from the left side (in which case the vectors are as big as there
+are rows in $X$), and $HX$ will be centering the **columns** of X. But
+you can also write it from the right side, in which case the vectors
+are as big as there are columns in $X$, and $XH$ will then be
+centering the **rows** of X.
+
+# Exercises
+
+1. You are given $M$, for which you know that $M = U \Lambda U^T$,
+   where $U$ is orthogonal, and $\Lambda$ is diagonal. Show that the
+   columns of $U$ are eigenvectors of $M$, and the entries in the
+   diagonal of $\Lambda$ are the eigenvalues.
+
+2. Show that the sum of squared lengths of $\tilde{X}$ is exactly the
+   total variance in the dataset, which is the sum of the squared
+   distance from each point to the average value.
+
+3. We talked about a *set* of data, but used a *matrix* in our
+   computations. Set elements are unordered, but matrix rows have a
+   specific order. Show that the PCA of a dataset is independent of
+   the choice of ordering of rows in the matrix $X$.
+   
+4. Finish the argument that any matrix $M$ that can be written as $M =
+   X^T X$ cannot have a negative eigenvalue.
+
+## Acknowledgments
+
+Mingwei Li provided careful proofreading and exercise suggestions.
+
+# Footnotes
+
+[^1]: The decomposition of a matrix $M$ into $M = U \Lambda U^T$, that is, into an orthogonal matrix, a diagonal matrix, and the inverse of the same orthogonal matrix is known as a "diagonalization" of a matrix. In this form, it should be easy to see that the columns of $U$ are the eigenvectors of $M$, and the diagonal entries of $\Lambda$ are the eigenvectors (so this is also often known as an "eigendecomposition").
+
+
+

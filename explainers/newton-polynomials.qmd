@@ -1,0 +1,12 @@
+---
+title: Newton Polynomials
+---
+
+TBW.
+
+## How is this different from Lagrange polynomials?
+
+One important difference is that the basis for [Lagrange
+polynomials](lagrange-polynomials.qmd) has polynomials all of the same
+degree. Similarly, the Lagrange basis does not depend on the order you
+provide the points.

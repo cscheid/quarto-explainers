@@ -1,0 +1,23 @@
+.small-square-chart {
+    width: 400px;
+    height: 400px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.small-inline-chart {
+    width: 250px;
+    height: 250px;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart {
+    width: 600px;
+    height: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

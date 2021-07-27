@@ -1,0 +1,159 @@
+---
+title: Regularization
+echo: false
+---
+
+In the context of statistics, data mining, and machine learning --
+specifically when designing optimization-based methods for data
+fitting --- regularization refers to the idea of choosing a model that
+purposefully does not fit the training data the best it could. The
+intuition is that, while we want complex models that can capture
+interesting features from the data, we want to prevent the model from
+fitting the noise in the training data, rather than the
+features. 
+
+In summary, regularization is a way to control the complexity of the
+model. In other words, we are talking about model selection. The first
+question one could ask is: "but why do we not control the model by
+explicitly choosing different models?" That is certainly one way to do
+model selection, but it is a surprisingly tricky one in practice. In
+simple cases (like linear regression), it is easy to compare two
+models to see which is more complex. But it's not as simple to choose
+the *appropriate* model complexity.
+
+In contrast, typical methods for regularization allow us to more
+easily connect the relationship of the amount of regularization to the
+amount of noise in the data.
+
+The simplest example of regularization is known as "ridge regression",
+and it builds on linear regression.
+
+## Ridge Regression
+
+The ridge regression model is quite simple. Recall the typical linear
+least squares setup:
+
+$$ X \beta = y $$
+
+Here, we are looking to fit the best parameters $\beta$ to rows of the
+design matrix. Each input point $(v\_i, y\_i)$ is mapped to some
+feature space encoded in the rows of $X$ ($f(v\_i) = x\_{i\star}$). The
+$\beta$ parameters which minimize the expected squared error are:
+
+$$ \hat{\beta} = (X^T X)^{-1} X^T y $$
+
+Without regularization, if our design includes too many parameters
+(for example, if we try to fit a polynomial of too-high a degree), our
+model will *overfit*. This can be seen in the demo below by
+increasing the degree, the noise, and setting the regularization to a
+very low value. In ridge regression, we create an extra parameter
+$\lambda$, and we want the extra parameter to control the complexity
+of the model. In short, the larger $\lambda$ is, the simpler we want
+our model to be. The error function for ridge regression is:
+
+$$ E = || X \beta - y ||^2 + \lambda ||\beta||^2 $$
+
+The solution for ridge regression is similar to that of linear least
+squares:
+
+$$ \hat{\beta} = (X^T X + \lambda I)^{-1} X^T y $$
+
+Notice that $E$ tries to balance two things: how bad the results are
+(the left term), and how large the vector of parameter values are. In
+other words, if we increase $\lambda$, this new error term will tend
+to interpret large magnitudes in $\beta$ as a bad sign. At first, it's
+puzzling that we would want the vector of parameter values to have a
+small magnitude.
+
+### Data imputation
+
+Ridge regression is equivalent to doing typical least squares while
+adding "ghost" entries to the data set. If $X$ has $n$ columns, then
+you should be able to see that adding $n$ new data points to the
+dataset, where $v\_{m+1} = (\sqrt{\lambda}, 0, \ldots, 0)$, $v\_{m+2} =
+(0, \sqrt{\lambda}, 0, \ldots, 0)$, etc. and $y\_{m+1} = y\_{m+2} =
+\cdots = 0$.
+
+In this interpretation, we see that regularization is trying to push
+all parameters of $\beta$ uniformly to zero (since that's the only way
+that $\beta$ will satisfy these specific values) by adding entries to
+the dataset that do not really exist. 
+
+In other words, regularization is equivalent to showing the training
+procedure a slight fiction (pessimistic towards zero), in order to not
+let the model get overexcited.
+
+### Normalization of data
+
+When using ridge regression, it becomes important to make sure that
+your data is *normalized*: in other words, the values in each column
+should have mean zero, and variance 1. 
+
+This normalization can be seen to be necessary by considering the data
+imputation view.
+
+If we do not set the mean of each column to zero, then regularization
+biases the model away from the data. That's a very bad thing: if
+nothing else, our simplest models should be shooting for the average
+data point. Without normalization, they do not (you can confirm this
+by unchecking the normalization box in the demo below). 
+
+Without setting the variance of all the features to be the same, ridge
+regression will penalize some features more than others. This is
+easier to see again in the imputation view of ridge regression: each
+of the ghost entries pushes the solution equally to zero.
+
+If the variance of the data is not one, then things *mostly* work,
+but regularization values become hard to compare across datasets,
+because the amount of regularization becomes relative to the variance
+on the specific datasets.
+
+### Effective degrees of freedom
+
+The degrees of freedom of a model can be recovered from the trace of
+the Hat matrix. So we can look at the trace of the Hat matrix of the
+Ridge regression to recover the *effective* degrees of freedom. This
+notion of model complexity is more directly comparable across
+different models (the full story is more complicated, but this is a
+very useful fiction). The formula for the effective degrees of freedom
+in a model is:
+
+$$ \textrm{eff-df} = \sum_i \left . \frac{\sigma_i^2}{\sigma_i^2 + \lambda} \right . $$
+
+Play around with the demo below, and notice how models with different
+dimensions (measured by the degree of the polynomials being fit) but
+with the same effective degrees of freedom, tend to *look the same*.
+
+## Ridge Regression Demo
+
+<div id="div-ridge"></div>
+
+Degree: <span id="span-degree"></span>.
+
+<div style="width: 300px; margin-bottom: 1em" id="slider-degree"></div>
+
+Regularization: <span id="span-regularization"></span>.
+
+<div style="width: 300px; margin-bottom: 1em" id="slider-regularization"></div>
+
+Noise level: <span id="span-noise"></span>.
+
+<div style="width: 300px; margin-bottom: 1em" id="slider-noise"></div>
+
+<div id="button-reseed" style="margin-top:1em"></div>
+
+Effective degrees of freedom: <span id="span-effdf"></span>
+
+Normalize columns: <span id="span-normalize"></span>
+
+
+```{ojs}
+//| output: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { main } from "./main.js";
+{
+  cscheid.setup.setupGlobals({ d3 });
+  main();
+}
+
+```

@@ -1,0 +1,63 @@
+---
+title: Support Vector Machines
+---
+
+The soft-margin support vector machine (SVM) is a classic method for
+supervised learning. 
+
+It looks to find a *large-margin* classifier: one for which its
+decision boundary is far from the examplars. This is unlike the linear
+perceptron, which will not in general guarantee large margins. The SVM
+model minimizes the following loss:
+
+$$ L(w) = \lambda ||w||^2 + \sum_{(x, y)} L_H(w, x, y) $$
+
+Here, $H_L$ denotes the *hinge loss*: 
+
+$$ L_H(w, x, y) = \left \{ \begin{array}{rl} 1 - y \langle w, x \rangle &, \textrm{if} \ y \langle w, x \rangle \le 1 \\ 0&, \textrm{otherwise} \end{array} \right . $$
+
+The hinge loss is particularly useful for classification because of
+two reasons. First, it is convex, which means that there exist
+algorithms that minimize $L(w)$ efficiently. Second, in the region
+where the misclassification loss (of a linear classifier) returns
+zero, the hinge loss has compact support, specifically in a way such
+that for points that are sufficiently far from the decision boundary,
+the hinge loss is zero.
+
+Crucially, that second reason implies that the position of correctly
+classified points that are sufficiently away from the decision
+boundary *does not matter for the classifier*. One way to see this
+intuitively is that if you are given a classifier that attains the
+minimum, together with one point for which this classifier gives a
+hinge loss of zero, then if you wiggle this point in any direction,
+the loss will still be zero, and that means that the classifier will
+still be optimal, even with this wiggled point. (Of course, if you
+wiggle the point so much that it crosses into the region of the hinge
+loss where the value is non-zero, then you'll potentially change the
+classifier.)
+
+As a result, after the training procedure finishes, we can identify the subset
+of input points which influence the decision: these are
+the **support vectors** (they "support" the decision). 
+Support vectors are particularly
+important in the "kernelized" formulation of the SVM.
+A general kernelized linear classifier needs to potentially access all training points to
+make a test-time prediction. The SVM, in contrast, needs only to store the
+support vectors, which might be a small fraction of all the
+input points.
+ 
+You can see the support vectors in the example below, where we train a
+support vector machine with 2D data (using a quadratic polynomial
+kernel). As $\lambda$ gets smaller, the penalty for making hinge loss
+errors gets comparatively larger, so the margin of the classifier
+itself gets smaller. As a result, the number of **support vectors**
+gets smaller. Note how the support vectors are all points that are
+either misclassified, or are points inside the $[-1, 1]$ range of the
+classification values: "within the margin".
+
+## Demo
+
+<a name="#svm-plot"></a>
+<div class="center-scaffold"><div id="svm-surface"></div><br><div>$\lambda$: <span class="editable" contenteditable="true" id="svm-lambda">0.1</span><br>(<a href="#svm-plot" id="svm-increase-lambda">increase</a>) (<a href="#svm-plot" id="svm-decrease-lambda">decrease</a>)</div></div>
+
+<script type="module" src="./main.js"></script>

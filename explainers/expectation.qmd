@@ -1,0 +1,76 @@
+---
+title: Expectation
+---
+
+# Expectation
+
+When we have a dataset of interest, we often seek to find a way to
+summarize the information in the data. The principle we are following here
+is that we want to somehow explain the phenomenon that generated the
+data, and we believe that this explanation requires "less data" than
+the entire dataset. We will produce a summary of the dataset
+(somehow), and our explanations will only refer to the summary. The
+assumption here is that "the stuff we left out" of the explanation is,
+somehow, less important. It might be noise, or it might be a
+particular aspect of the data we don't care about.
+
+The *expectation* of a variable is the simplest way to describe a
+summary of data, and is as ubiquitous as it useful. In its simplest
+form, the expectation of a set of numbers is just the arithmetic mean
+of their values:
+
+$$E[X] = (1/|X|) \sum_{x \in X} x$$
+
+The expectation (or "expected value") gives a notion of centrality:
+what a value tends to be. It's important to know right away that there
+are many such notions: for example, the mode and the median are two
+other useful notions. So even though you *can* use expectation to
+give a single value that somehow stands for the entire dataset, it
+doesn't mean you *should*.
+
+The first way in which expectations can be generalized from the
+formula above is that we often want to talk about scenarions in which
+some situations are more likely than others. Intuitively, if elements
+in our dataset have a notion of *probability* associated with them, we
+would like our notion of expectation to somehow take this into
+account. 
+
+For example, if you have a fair 6-sided die, then the
+expectation of the value of the roll is just $1/6 * (1+2+3+4+5+6) =
+21/6$. But if your friend wants to sell you a bet with you
+where he flips a loaded coin that's five times as likely to give tails than
+heads, and he'll pay you a dollar only if the coin lands on heads,
+then it seems wrong to think that the expectation will be $1/2 * (0 +
+1)$. Instead, what we want to do is to associate with each element of
+the dataset (or "each outcome of the experiment") a real number, such
+that these numbers sum to 1. These are the probabilities. The
+expectation is then the sum of the values multiplied by the
+probability associated to each value.
+
+## Expectations over expressions
+
+Expectations are useful because they are easy to manipulate. So we can
+write things like: $E[X^2 - X]$ or $E[(X+Y)^2]$.
+
+Some of these expressions can get confusing. For example, what if $X$
+denotes the value of one die roll, and $Y$ the value of another roll?
+The rule to keep in mind is that the expectation operator is always taken "over a
+single dataset" (more formally, it's always over a given, single
+random variable and its associated probability space). So in the example
+above, there is an implicit operation of turning the two dice rolls
+into a *single* experiment, and in that case you need to be careful to
+think about the probabilities that each particular case gets (read
+[more on probability spaces](probabilities.html)).
+
+The main feature of the expectation is that it's a *linear* operator:
+
+$$E[X + Y] = E[X] + E[Y]$$
+
+$$E[kX] = k E[X]$$
+
+$$E[k] = k$$
+
+It means that we can understand complicated expectation expressions by
+breaking them into sums, and turning those into sums of
+(simpler) expectations. And this is really why they are so popular,
+even when sometimes it doesn't make sense to use them. 

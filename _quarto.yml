@@ -1,0 +1,13 @@
+project:
+  type: site
+
+site:
+  title: ""
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    code-tools:
+      toggle: true
+

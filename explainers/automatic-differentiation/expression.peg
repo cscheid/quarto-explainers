@@ -1,0 +1,44 @@
+start
+  = definitions
+
+definitions
+  = expression // let's simplify things for now
+  // = definition ";" _ definitions
+  //  definition
+
+definition
+  = v:variable _ "=" _ d:expression { return { "type": "def", "children": [v, d] }; }
+  // = variable _ "=" _ expression
+
+expression
+  = left:mult _ "+" _ right:expression { return { "type": "add", "children": [left, right] }; }
+  / left:mult _ "-" _ right:expression { return { "type": "sub", "children": [left, right] }; }
+  / mult
+
+mult
+  = left:special _ "*" _ right:mult { return { "type": "mul", "children": [left, right] }; }
+  / left:special _ "/" _ right:mult { return { "type": "div", "children": [left, right] }; }
+  / special
+
+special
+  = "sin" _ "(" _ arg:expression _ ")" { return { "type": "sin", "children": [arg] }; }
+  / "cos" _ "(" _ arg:expression _ ")" { return { "type": "cos", "children": [arg] }; }
+  / "exp" _ "(" _ arg:expression _ ")" { return { "type": "exp", "children": [arg] }; }
+  / "log" _ "(" _ arg:expression _ ")" { return { "type": "log", "children": [arg] }; }
+  / primary
+
+primary
+  = variable
+  / num:number _ { return num; }
+  / "(" _ exp:expression _ ")" _ { return exp; }
+
+number
+  = digits:[0-9]+           { return { "type": "number", "children": [], "value": Number(digits.join("")) }; }
+  / digits:[.][0-9]+        { return { "type": "number", "children": [], "value": Number(digits.join("")) }; }
+  / digits:[0-9]+[.][0-9]+  { return { "type": "number", "children": [], "value": Number(digits.join("")) }; }
+
+variable
+  = name:[a-zA-Z][a-zA-Z0-9]* _ { return { "type": "variable", "children": [], "name": name }; }
+
+// optional whitespace
+_ = [ \t\r\n]*

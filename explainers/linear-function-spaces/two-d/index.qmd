@@ -1,0 +1,10 @@
+---
+title: Two-dimensional linear function spaces
+---
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<script src="../../../js/lux.js"></script>
+
+<div id="bilinear-reconstruction" class="chart"></div>
+
+<script type="module" src="./main.js"></script>

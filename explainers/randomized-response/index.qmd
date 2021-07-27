@@ -1,0 +1,67 @@
+---
+title: Randomized Response
+---
+
+# Randomized Response
+
+Imagine we want to estimate how many people in a population use a drug by asking them.
+People have an incentive to not answer truthfully, they're concerned they might be implicated if there is a leak of that private information.
+Randomized response is a way to set up such a survey with sensitive questions to protects the respondents from privacy leaks.
+Although it was invented by Stanley Warner way back in the 60s, it is a good starting point in understanding "privacy-preserving data analysis", which is a modern research area.
+
+The idea is to give respondents a plausible, "innocent" reason for answering "yes" to the implicating question, so that if a leak does happen, there is plausible deniability from the perspective of the respondent. 
+A basic protocol for randomized response is to ask respondents to perform the following steps:
+
+* Before answering the question, flip a coin.
+  * If it comes out heads, answer the question truthfully.
+  * If it comes out tails, then flip another coin.
+    * If the second flip comes out heads, respond "yes".
+    * If the second flip comes out tails, respond "no".
+
+On average, only half the respondents will be asked to respond truthfully.
+The other half will simply write the results of the coin flip.
+There are two important properties of this protocol.
+
+1. Even if the analyst discloses the entire database, each respondent is "safe", because there's a 50-50 chance that their first coin flip came out heads, and so they responded at random. In other words, disclosing a "yes" answer is unlikely to incriminate anyone, because everyone answers "yes" with probability at least 1/2.
+2. We know that, on average, half the respondents will answer with the coin flip, while the other half will answer truthfully. This means we can recover a very good approximation of the results of the "full survey"
+
+## Estimating the true response rate
+
+The result of the randomized response is a typical "biased" response, in the sense that the response we get is skewed in a particular way, and our goal is to "undo" this skew. 
+In this case, there is one very simple analysis. 
+If we have $r$ respondents, we know that the number of truthful answers will not be very far from $r/2$, and so we estimate that $r/2$ of the answers are truthful. 
+We then need to estimate the number of "truthful yes"s. We know that the number of "random yes"s is going to be about $r/4$, from getting heads then heads from the coin flips. 
+
+Let's say that our biased survey has $Y$ yes's and $N$ no's. 
+We simply "invent" an "estimated true survey" with a new number of responses $Y' = Y - r/4$ and $N' = N - r/4$, with total respondents $r' = Y' + N'$. 
+Now we estimate that the fraction of people who truthfully would answer yes is $Y'/r'$.
+
+## Risks
+
+The neat thing about this protocol is that it does not require the respondent to trust the survey creator: the properties hold independent of the behavior of each party. 
+Although it might intuitively seem that it doesn't matter *at all* whether or not each individual's responses are leaked, there is an important catch.
+This protection against leakage only works if the respondents don't answer multiple independent surveys asking the same question.
+Imagine an extreme case where each respondent answers 1000 of these surveys and respects the protocol each time.
+
+Clearly, if only one of these datasets leak, then each of the respondents are not at high risk. 
+But each additional leakage of a new dataset of the same questions *does* erode the privacy of the answer because for every individual respondent, we start to be able to accumulate a large number of independent runs of that protocol. 
+
+Crucially, the same technique that we used to estimate the response rate for a _group_ also works to estimate the true response of an individual. 
+With a single run, there's too much noise to make any real statement. 
+But with many runs, eventually the true answer becomes clear and the respondent's privacy is effectively ruined.
+
+# Takeaways
+
+Randomized response shows that it's possible to create protocols that enable "privacy-preserving data analysis". 
+They're not a panacea, though, as the risks show.
+
+The risks also teach us that privacy loss is not always a "discrete" phenomenon: privacy losses can compound gradually.
+If data leaks happen, repeated randomized responses over related data will necessarily erode the privacy.
+In addition, there is a tradeoff going on between the accuracy we can obtain for some questions, and the privacy loss incurred.
+
+The best, modern answer we have in data analysis for this problem is the notion of *differential privacy*. 
+Differential privacy *also* involves adding noise to answers, but in a fancier way.
+
+## References
+
+* Warner, S.L. Randomized Response: A Survey Technique for Eliminating Evasive Answer Bias. Journal of the American Statistical Association, 60, 63--69. Taylor & Francis, 1965.

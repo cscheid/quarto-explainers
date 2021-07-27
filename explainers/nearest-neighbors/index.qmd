@@ -1,0 +1,20 @@
+---
+title: Nearest-neighbor classification
+---
+
+<div id="knn-surface"></div>
+
+```{ojs}
+//| echo: false
+viewof k = Inputs.range([1, 100], {label: "number of neighbors", value: 30, step: 1});
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+{
+  window.updatePlot(k);
+}
+```
+
+<script type="module" src="./main.js"></script>

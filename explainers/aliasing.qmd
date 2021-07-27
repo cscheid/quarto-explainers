@@ -1,0 +1,117 @@
+---
+title: "Aliasing"
+execute:
+  echo: false
+---
+
+```{ojs}
+viewof signalWidth = Inputs.range([4, 100], {value: 40, step: 0.01, label: "Signal Bandwidth"})
+```
+
+```{ojs}
+diagram = {
+  debugger;
+  const sliderPos = document.querySelectorAll("input[type='range']")[0].getBoundingClientRect();
+  const mainPos = document.querySelector("main").getBoundingClientRect().x;
+  const svg = htl.svg`<svg width="${width}" height="20"></svg>`;
+  const xLeft = sliderPos.x - mainPos; // account for margin :shrug:
+  const xRight = xLeft + sliderPos.width;
+  const xScale = d3.scaleLinear().domain([4, 100]).range([xLeft, xRight]);
+  const criticalBandWidth = xScale(signalWidth);
+  const goodOpacity = 2 * combWidth > signalWidth ? 0.2 : 1.0;
+  const badOpacity = 2 * combWidth > signalWidth ? 1.0 : 0.2;
+  
+  const badColor = d3.lab(70, 30, 0);
+  const goodColor = d3.lab(70, -30, 0);
+  const goodSampling = htl.svg`<path stroke="${goodColor}" opacity="${goodOpacity}" fill="none"></path>`;
+  const badSampling = htl.svg`<path stroke="${badColor}" opacity="${badOpacity}" fill="none"></path>`;
+  const line = d3.line();
+  goodSampling.setAttribute("d", line([[xLeft, 18], [criticalBandWidth-2, 18], [criticalBandWidth-2, 2]]));
+  badSampling.setAttribute("d", line([[xRight, 18], [criticalBandWidth+2, 18], [criticalBandWidth+2, 2]]));
+  const goodLabel = htl.svg`<text x=${criticalBandWidth-5} opacity="${goodOpacity}" fill="${goodColor}" font-size=".9em" y=15 text-anchor="end">Good</text>`;
+  const badLabel = htl.svg`<text x=${criticalBandWidth+5} opacity="${badOpacity}" fill="${badColor}" font-size=".9em" y=15>Aliasing</text>`;
+  svg.appendChild(goodLabel);
+  svg.appendChild(badLabel);
+  svg.appendChild(goodSampling);
+  svg.appendChild(badSampling);
+//  svg.appendChild(htl.svg`<line x1=${xLeft} x2=${xLeft} y1=0 y2=20 stroke="black"></line>`);
+//  svg.appendChild(htl.svg`<line x1=${xRight} x2=${xRight} y1=0 y2=20 stroke="black"></line>`);
+//  svg.appendChild(htl.svg`
+  return svg;
+}
+```
+
+```{ojs}
+viewof combWidth = Inputs.range([2, 50], {value: 37, step: 0.01, label: "Sampling Bandwidth"})
+```
+
+```{ojs}
+viewof animated = Inputs.toggle({label: "Animate signal", value: true})
+```
+
+```{ojs}
+svg = {
+  d3.select(staticSVG.el).selectAll("path").attr("transform", `translate(${-phase}, 50)`);
+  return staticSVG.el;
+}
+```
+
+[This tweet](https://twitter.com/jagarikin/status/1419165889950142465) shows the phenomenon of [*aliasing*](https://en.wikipedia.org/wiki/Aliasing)  through a very effective animation. The notebook port here provides a little bit of interactivity so you can explore what happens when a signal is not sampled often enough in a reconstruction:
+
+* A well-sampled signal must be sampled at least twice as often as the highest frequency in the original signal. It's not obvious yet [always possible](https://en.wikipedia.org/wiki/Whittaker%E2%80%93Shannon_interpolation_formula) to reconstruct a signal exactly if it's been sampled at a sufficiently-high rate.
+
+* A signal sampled less frequently than that will **alias**: no matter what the algorithm, it's not possible to always reconstruct the correct frequency of the true signal.
+
+(I first posted this directly [on Observable](https://observablehq.com/@cscheid/aliasing/).)
+
+```{ojs}
+//| output: false
+phase = {
+  let result = 0;
+  if (animated) {
+    result = (elapsed * signalWidth) % signalWidth;
+  }
+  return result;
+}
+nowAtDocumentBoot = {
+  return Number(new Date()); // we need this to avoid numerical issues with huge phases
+}
+elapsed = (now - nowAtDocumentBoot) / 1000;
+staticSVG = {
+  console.log("Foo");
+  const svg = htl.svg`<svg width=${width} height=100></svg>`
+  const sel = d3.select(svg);
+  sel
+    .append("path")
+    .attr("d", signal)
+    .attr("stroke", "red")
+    .attr("fill", "none");
+  const coverage = (combWidth - 2) / combWidth;
+  const count = ~~(width / 2) / combWidth;
+  combMask(sel, coverage, combWidth, count)
+    .attr("transform", "translate(100, 0)");
+  return { el: svg };
+}
+function sineCurve(freqInInvPixels, amplitudeInPixels) {
+  const nPoints = 2 * width; 
+  const curveScale = d3.scaleLinear().domain([0, nPoints]).range([0, width * Math.PI * freqInInvPixels])
+  const xScale = d3.scaleLinear().domain([0, nPoints]).range([0, width]);
+  const line = d3.line();
+  const points = d3.range(~~(2 * width + 4/freqInInvPixels)).map(x => [xScale(x), Math.sin(curveScale(x)) * amplitudeInPixels]);
+  return line(points);
+}
+signal = sineCurve(2/signalWidth, 30)
+function combMask(svg, coverage, width, count) {
+  return svg
+      .append("g")
+      .selectAll("rect")
+      .data(d3.range(count))
+      .join("rect")
+      .attr("x", d => d * width)
+      .attr("width", width * coverage)
+      .attr("fill", "rgb(240, 240, 240)")
+      .attr("y", 0)
+      .attr("height", 100)
+}
+```
+

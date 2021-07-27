@@ -1,0 +1,22 @@
+---
+title: Duality
+---
+
+<div id="div-duality"></div>
+
+The duality principle states that the <span class="blue">**smallest**</span> distance from a point
+to a convex shape is also the <span class="red">**largest**</span> distance from a point to a
+hyperplane tangent to the convex shape.
+
+(Go ahead, drag the black point around.)
+
+```{ojs}
+//| output: false
+//| echo: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { main } from "./duality.js";
+{
+  cscheid.setup.setupGlobals({ d3 });
+  main();
+}
+```

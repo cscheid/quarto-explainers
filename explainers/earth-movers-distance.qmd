@@ -1,0 +1,37 @@
+---
+title: Earth Mover's Distance
+resources:
+  - ../data/datasets/mnist/*-ubyte
+---
+
+In many real-life situations, $L_p$ are not very useful metrics. If
+your vector space has a good ground metric (think of "distances
+between pixels" in an image), then the "earth mover's distance" (EMD)
+is better. Mathematicians call this the Wasserstein metric.
+
+Give a cost from moving "stuff" from one pixel to another, and define
+the distance between two images as the minimal cost to move stuff so
+that the first image equals the second. This better matches our
+intuition that two images that differ only by nearby pixels should be
+closer than two images that differ by pixels that are far away from
+one another. The $L_2$ metric is invariant to shuffling the pixels in
+an image (this is very weird when you think about it); the EMD is not.
+
+Here we demonstrate the difference between interpolating along the
+"optimal transport" (a shortest path in the EMD metric) and
+linear interpolation (a shortest path in the $L_2$ metric).
+
+<div id="emd-mnist-canvas"></div>
+
+<button id="lerp">linear interpolation</button> <button id="emd">optimal transport</button>
+
+```{ojs}
+//| output: false
+//| echo: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { main } from "./earth-movers-distance.js";
+{
+  cscheid.setup.setupGlobals({ d3 });
+  main();
+}
+```

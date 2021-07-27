@@ -1,0 +1,90 @@
+---
+title: Eigenwhat?
+---
+
+This demo will help you build intuition for the behavior of
+eigenvectors and eigenvalues of a 2x2 symmetric real matrix. 
+
+An **eigenvector** $v$ of a matrix $M$ is any vector that satisfies
+the following equation:
+
+$$Mv = \lambda v$$
+
+In words, if you transform a vector $v$ by a matrix $M$ and you end up
+with a scaled version of itself, then $v$ is an eigenvector. The
+amount by which the vector is scaled is called an eigenvalue of $M$.
+
+When the 2x2 matrix is symmetric, then there exist two eigenvectors
+that are orthogonal to each other. In that case, we can write the
+matrix as:
+
+$$ M = U \Sigma U^T $$
+
+where $U$ is a matrix holding the eigenvectors and $\Sigma$ is a
+diagonal matrix where the entries in the diagonal are the
+eigenvalues. If you'll remember from linear algebra, every time you
+have a square matrix whose rows (or columns) are orthogonal to each
+other, that is a **rotation** matrix and, in addition, rotation
+matrices are such that their transposes are their inverses. So a good
+way to think about this is that eigenvectors give you a **decomposition** of the matrix M into simpler matrices.
+
+In other words, the operation of every symmetric matrix $M$ on a
+vector $v$ is $Mv = U \Sigma U^T v$, or:
+
+* $U^T v$: transform the vector $v$ to the "eigenspace": this is a rotation
+* $\Sigma U^T v$: in the eigenspace, scale the vector's coordinates by the eigenvalues
+* $Mv = U \Sigma U^T v$: transform the scaled vector back to the original basis
+
+In the interactive demo below, the unit-length eigenvectors are
+represented by the red dots.
+
+## Points transformed by a symmetric 2x2 matrix
+
+<div id="transform"></div>
+<div id="matrix-operation"></div>
+
+### Enter the values for M here
+
+----------------------------------------------------------------------------------   ----------------------------------------------------------------------------------
+$M_{00}$   <input type="number" id="m00" min="-10" max="10" value="4" step="0.05">   $M_{01}$   <input type="number" id="m01" min="-10" max="10" value="1" step="0.05">
+$M_{10}$   <span id="m10">1</span>                                                   $M_{11}$   <input type="number" id="m11" min="-10" max="10" value="2" step="0.05">
+----------------------------------------------------------------------------------   ----------------------------------------------------------------------------------
+
+### Eigenvectors and eigenvalues
+
+-------------------------------    -------------------------------
+$U_{00}$ <span id="u00"></span>    $U_{01}$ <span id="u01"></span>
+$U_{10}$ <span id="u10"></span>    $U_{11}$ <span id="u11"></span>
+-------------------------------    -------------------------------
+
+-----------------------------------    -----------------------------------
+$\lambda_0$ = <span id="l0"></span>    $\lambda_1$ = <span id="l1"></span>
+-----------------------------------    -----------------------------------
+
+## Known bugs
+
+* Eigenvalue multiplicity (two eigenvectors not aligned with one
+  another with equal eigenvalues) will mean that there are more than 2
+  unit-length eigenvectors, and my crappy power iteration algorithm
+  stops working in that case.
+* The rotation transition for $U$ and $U^T$ should be an actual
+  rotation. For small rotations the linear interpolation looks fine,
+  but for bigger ones it's hard to see what's going on.
+* We should arbitrarily flip the eigenvector signs such that we get a
+  smaller rotation on $U^T$ and $U$. Sometimes my crappy power
+  iteration algorithm gives the "bad" eigenvector, and that makes it
+  hard to see what's going on.
+* If one of the eigenvalues is zero, my crappy power iteration
+  algorithm gives a bad eigenvector (notice a theme here?)
+
+## More reading
+
+If you really want to understand eigenvectors and eigenvalues, the
+best thing to read continues to be chapter 5 of Shewchuk's classic
+[Introduction to the Conjugate Gradient Method Without the Agonizing Pain](http://www.cs.cmu.edu/~./quake-papers/painless-conjugate-gradient.pdf).
+
+The particular presentation in this demo was inspired by Blinn's also-classic [Consider the lowly 2x2 matrix](http://ieeexplore.ieee.org/document/486688/).
+
+<script src="./gl-matrix.js"></script>
+<script type="module" src="./main.js"></script>
+

@@ -1,0 +1,44 @@
+---
+title: Trigonometry
+echo: false
+---
+
+## The Basics
+
+[Just like everyone else on twitter](https://twitter.com/divbyzero/status/927517766369804289),
+when I saw this diagram below my reaction was: "why haven't I been
+shown this 25 years ago?" The lengths of the lines correspond to the
+values of the trigonometric functions. Drag the point to change the
+diagram around.
+
+```{ojs}
+basicTrig = htl.html`<div id="basic-trig"></div>`
+```
+
+## Complex exponentials FTW
+
+This is my favorite trig trick. Never memorize a formula for sines of sums, differences, or fractions again. Start from
+
+$$\begin{eqnarray*}e^{ix} &=& \cos x + i \sin x\\e^{-ix} &=& \cos -x + i \sin -x = \cos x - i \sin x\end{eqnarray*}$$
+
+From these two, you get that 
+
+$$\begin{eqnarray*}\cos x &=& \frac{e^{ix} + e^{-ix}}{2}\\\sin x &=& \frac{e^{ix} - e^{-ix}}{2i}\end{eqnarray*}$$
+
+Now expressions like $\sin (a+b)$ are obvious to work out instead of
+big and scary. You only need memorize those formulas above, and from
+them you can derive many of the annoying high school formulas.
+
+## References
+
+1. [Trigonometry and Complex Exponentials](http://wstein.org/edu/winter06/20b/notes/html/node30.html), William Stein.
+
+```{ojs}
+//| output: false
+import { cscheid } from "/js/cscheid/cscheid.js";
+import { draw } from "./main.js";
+{
+  cscheid.setup.setupGlobals({ d3 });
+  draw(basicTrig);
+}
+```
