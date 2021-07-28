@@ -2,8 +2,9 @@
 title: Explainers
 ---
 
-This is a collection of small explanatory notes and interactive demos. They started
-with a focus on data science, but have sprawled into "math and CS explainers".
+This is a collection of small explanatory notes and interactive
+demos. They started with a focus on data science, but have sprawled
+into "math and CS explainers".
 
 These notes are probably more informal than what you may be
 expecting. If you're looking for textbooks, I'm sure you can find

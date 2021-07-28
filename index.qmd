@@ -1,0 +1,5 @@
+---
+title: "Index"
+---
+
+Go to [the main index page](explainers/index.qmd).
