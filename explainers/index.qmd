@@ -12,12 +12,16 @@ excellent ones.
 ## Basics
 
 * [Trigonometry](trigonometry/index.qmd)
-* [Linear Regression](linear-regression.qmd)
+
+## Probability
+
+* [Bayes's Rule and Fagan's Nomogram](fagans-nomogram/index.qmd) 
 
 ## Supervised Learning
 
 Methods which use data to make predictions about new, unseen data.
 
+* [Linear Regression](linear-regression.qmd)
 * [Logistic Regression](logistic-regression/index.qmd)
 * [Support Vector Machines](svm/index.qmd)
 * [Error-correcting output codes](error-correcting-output-codes/index.qmd)

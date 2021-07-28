@@ -1,0 +1,47 @@
+---
+title: Fagan's Nomogram
+---
+
+The Fagan nomogram [1] is a nomogram [2] that computes the probability
+of the presence of some condition based on an imperfect test and
+varying pre-test probabilities. It is a very handy tool to understand
+Bayes's Theorem "physically". People typically have a sense that the
+less powerful the test, the less likely it is that a
+positive test result means the presence of the condition. But
+people are much less likely to grasp the role of the pre-test
+probability [3]. 
+
+As an illustration, consider the example illustrated in the default
+setting of the nomogram below. If only 10% of the population exhibit a
+particular kind of condition, then even if a test gives a ratio of
+true positives to false positives at 10 to 1, only 50% of the people
+tested positive will actually exhibit the condition.
+
+Similarly, if only 10% of the population exhibits the condition, then
+in order to be 90% sure that a positive result indicates the presence
+of the condition, the test can give a false-positive result only
+1 every 100 times it gives true positive results. Intuitively, what's
+going on is that the base-10 logarithm of the "likelihood ratio" (10
+and 100 respectively in the examples above) is the "number of nines
+added to the baseline probability", interpreting a probability of 0.1
+as having "negative 1 nine".
+
+The original nomogram was meant to be used with a physical ruler to do
+the calculations. Here, you can grab the circles and move them around
+to change the settings.
+
+<div id="main"></div>
+
+## References
+
+1. Fagan TJ. 
+   [Letter: Nomogram for Bayes theorem](https://www.ncbi.nlm.nih.gov/pubmed/1143310). 
+   NEJM, July 1975.
+
+2. Wikipedia article on
+   [Nomograms](https://en.wikipedia.org/wiki/Nomogram).
+
+3. Casscells W, Schoenberger A, Graboys TB.
+   [Interpretation by physicians of clinical laboratory results](https://www.ncbi.nlm.nih.gov/pubmed/692627). NEJM 299(18):999-1001, Nov. 1978.
+
+<script type="module" src="./main.js"></script>
