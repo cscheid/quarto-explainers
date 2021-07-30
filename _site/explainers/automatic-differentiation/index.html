@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Automatic Differentiation</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script type="module" src="../../site_libs/quarto-ojs/ojs-bundle.js"></script>
+  <link href="../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+<li><a href="#given-a-computation-graph-derivatives-are-local" class="nav-link" data-scroll-target="#given-a-computation-graph-derivatives-are-local">Given a computation graph, derivatives are <em>local</em></a></li>
+<li><a href="#forward-mode-autodiff" class="nav-link" data-scroll-target="#forward-mode-autodiff">Forward-mode autodiff</a>
+<ul class="collapse">
+<li><a href="#just-carry-the-derivatives-with-the-values" class="nav-link" data-scroll-target="#just-carry-the-derivatives-with-the-values">Just carry the derivatives with the values</a></li>
+</ul></li>
+<li><a href="#reverse-mode-autodiff" class="nav-link" data-scroll-target="#reverse-mode-autodiff">Reverse-mode Autodiff</a>
+<ul class="collapse">
+<li><a href="#pushing-derivatives-up" class="nav-link" data-scroll-target="#pushing-derivatives-up">“Pushing derivatives up”</a></li>
+<li><a href="#backpropagation" class="nav-link" data-scroll-target="#backpropagation">Backpropagation?</a></li>
+</ul></li>
+<li><a href="#why-does-this-matter" class="nav-link" data-scroll-target="#why-does-this-matter">Why does this matter?</a></li>
+<li><a href="#acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Automatic Differentiation</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<script src="peg-0.10.0.js"></script>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Derivatives show up everywhere in data science, and most notably in optimization, because of gradient descent (and its variants). Writing derivatives by hand is error-prone and annoying, especially for complicated expressions. Automatic differentiation (“autodiff”) is an algorithm that solves all of these problems: evaluating gradients is usually only as expensive as evaluating the functions themselves, and since it’s the computer doing it, you’re never going to miss a term again. Autodiff is also the backbone of libraries like PyTorch and TensorFlow.</p>
+<p>Automatic differentiation works by traversing a data structure representing the value we want to compute. People call this “expression graph”, “expression tree”, or an “computation graph”: they’re the same thing. Usually, we ask Python to compute the value of an expression directly:</p>
+<pre><code>&gt;&gt;&gt; 3 + (5 * 6)
+33</code></pre>
+<p>Instead, we can build a data structure representing that, and ask Python to derive the value:</p>
+<pre><code>class Variable:
+    def __init__(self, value):
+        self.v = value
+    def evaluate(self):
+        return self.v
+
+class Sum:
+    def __init__(self, left, right):
+        self.l = left
+        self.r = right
+    def evaluate(self):
+        return self.l.evaluate() + self.r.evaluate()
+
+class Mult:
+    def __init__(self, left, right):
+        self.l = left
+        self.r = right
+    def evaluate(self):
+        return self.l.evaluate() * self.r.evaluate()
+
+&gt;&gt;&gt; x = Sum(Variable(3), Mult(Variable(5), Variable(6)))
+&gt;&gt;&gt; x.evaluate()
+33</code></pre>
+<p>(This is, in fact, pretty much how Python actually evaluates expressions internally.)</p>
+</section>
+<section id="given-a-computation-graph-derivatives-are-local" class="level2">
+<h2 class="anchored" data-anchor-id="given-a-computation-graph-derivatives-are-local">Given a computation graph, derivatives are <em>local</em></h2>
+<p>The first important bit of intuition on how derivatives can be computed comes from the way the chain rule works. You’ve probably seen the chain rule written in this way: <span class="math display">\[ \frac{df}{dx} = \frac{df}{du} \times \frac{du}{dx} \]</span></p>
+<p>This version of the chain rule says that if <span class="math inline">\(f\)</span> depends on <span class="math inline">\(x\)</span> only through <span class="math inline">\(u\)</span>, and <span class="math inline">\(u\)</span> depends on <span class="math inline">\(x\)</span>, then the derivative <span class="math inline">\(df/dx\)</span> is the product of the “immediate derivative” from <span class="math inline">\(f\)</span> to <span class="math inline">\(u\)</span>, <span class="math inline">\(df/du\)</span>, and the “immediate derivative” from <span class="math inline">\(u\)</span> to <span class="math inline">\(x\)</span>, <span class="math inline">\(du/dx\)</span>.</p>
+<p>This lets us compute the derivative of <span class="math inline">\(f = \sin (\cos x)\)</span> knowing only the base case rules that if <span class="math inline">\(u = \sin x\)</span>, then <span class="math inline">\(du/dx = \cos x\)</span>, and if <span class="math inline">\(v = \cos x\)</span>, then <span class="math inline">\(dv/dx = -\cos{x}\)</span>: <span class="math display">\[ df/dx = \cos (\cos x) \times - \sin (x) \]</span></p>
+</section>
+<section id="forward-mode-autodiff" class="level1">
+<h1>Forward-mode autodiff</h1>
+<p>If we organize our computation in terms of nodes that know how to evaluate their own derivatives, that computation will only need the derivatives of the immediate neighbors. This is because, as we saw above, the chain rule means that “dependencies propagate one node at a time”.</p>
+<p>Imagine the computation of the example above, <span class="math inline">\(3 + (5 \times 6)\)</span>, except that we create named variables: <span class="math inline">\(a + bc\)</span>, <span class="math inline">\(a = 3, b = 5, c = 6\)</span>. Say we wanted to compute the derivative of that expression with respect to <span class="math inline">\(b\)</span>: <span class="math inline">\(d \{ a + bc \}/db = c = 6\)</span>. Can we come up with an algorithmic way to do this? The easiest way is called “forward-mode automatic differentiation”.</p>
+<section id="just-carry-the-derivatives-with-the-values" class="level2">
+<h2 class="anchored" data-anchor-id="just-carry-the-derivatives-with-the-values">Just carry the derivatives with the values</h2>
+<p>If you inspect the source code for the Python evaluation library we wrote above, the evaluation of each node needs only to know the values of its immediate neighbors. Forward-mode autodiff simply takes this idea one step further, and carries the derivatives together with the values:</p>
+<pre><code>class Variable:
+    def __init__(self, value, derivative):
+        self.v = value
+        self.d = derivative
+    def evaluate(self):
+        return (self.v, self.d)
+
+class Sum:
+    def __init__(self, left, right):
+        self.l = left
+        self.r = right
+    def evaluate(self):
+        (left_v, left_d) = self.l.evaluate()
+        (right_v, right_d) = self.r.evaluate()
+        return (left_v + right_v, left_d + right_d)
+
+class Mult:
+    def __init__(self, left, right):
+        self.l = left
+        self.r = right
+    def evaluate(self):
+        (left_v, left_d) = self.l.evaluate()
+        (right_v, right_d) = self.r.evaluate()
+        return (left_v * right_v,
+                left_v * right_d + left_d * right_v) # product rule
+
+&gt;&gt;&gt; a = Variable(3, 0)
+&gt;&gt;&gt; b = Variable(5, 1)
+&gt;&gt;&gt; c = Variable(6, 0)
+&gt;&gt;&gt; x = Sum(a, Mult(b, c))
+&gt;&gt;&gt; x.evaluate()
+(33, 6)</code></pre>
+<p>There is a bit of a trick going on, which is how we encode which variable we are taking the derivative over. We simply ask variables to store the values of their derivatives with respect to whatever variable we’re interested in. In our example, we want to take a derivative over <span class="math inline">\(b\)</span>, and so <span class="math inline">\(da/db = 0, db/db = 1, dc/db = 0\)</span>.</p>
+<p>Of course, you have to teach your library about other expressions and derivative rules as well:</p>
+<pre><code>class Sin:
+    def __init__(self, v):
+        self.v = v
+    def evaluate(self):
+        (v, d) = self.v.evaluate()
+        return (math.sin(v), math.cos(v) * d)
+
+class Cos:
+    def __init__(self, v):
+        self.v = v
+    def evaluate(self):
+        (v, d) = self.v.evaluate()
+        return (math.cos(v), -math.sin(v) * d)
+
+# class Exp, Log, etc.</code></pre>
+<p>This is called <em>forward-mode</em> autodiff because the derivatives “flow forward” with the computation of values. You can see the algorithm in action here, with uniformly random values between 0 and 1 assigned to the variables:</p>
+<div id="fm-autodiff-exp">
+Expression: <input id="fm-autodiff-input" value="a + b*c"><button id="fm-autodiff-go">Compute d/da
+</button></div>
+<div id="fm-autodiff">
+
+</div>
+<p>This works well for simple expressions. However, consider the case of computing the <em>gradient</em> of a function: the vector of partial derivatives with respect to all variables. If we want to use forward-mode autodiff to compute the gradient, we end up having to evaluate the same expression over and over again, just changing the values of the <code>d</code> fields of the variables <code>a</code>, <code>b</code>, and <code>c</code>. That’s quite inefficient, so let’s try to identify where the inefficiency comes from.</p>
+<p>Pay attention to the partial derivatives we are computing with forward-mode autodiff. For every invocation, we choose one variable to compute the derivative over. We are keeping the “denominator” of the derivative fixed, and varying the “numerator” over all possible computation nodes. But a gradient does the opposite. It keeps the “numerator” fixed, and varies the “denominator” over all variables of the function: <span class="math inline">\(\nabla f(x, y, z, w) = [ \partial f / \partial x, \partial f / \partial y, \partial f / \partial z, \partial f / \partial w ]\)</span>. So if we use forward-mode autodiff to compute gradients, all the computations of the derivatives of the intermediate nodes are wasted.</p>
+<p>There is a better way to do this! It’s called reverse-mode autodiff.</p>
+</section>
+</section>
+<section id="reverse-mode-autodiff" class="level1">
+<h1>Reverse-mode Autodiff</h1>
+<p>Let’s start with that same original expression, <span class="math inline">\(f = a + bc\)</span>. First, you should convince yourself that the gradient of <span class="math inline">\(f\)</span>, <span class="math inline">\(\nabla f = [\partial f/\partial a, \partial f/\partial b, \partial f/\partial c]\)</span> is equal to <span class="math inline">\([1, c, b]\)</span>, and then break <span class="math inline">\(f\)</span> into simple expressions: <span class="math display">\[\begin{eqnarray*}d &amp;=&amp; b \times c\\ f &amp;=&amp; a + d\end{eqnarray*}\]</span></p>
+<p>If we wanted to compute the gradient of <span class="math inline">\(f\)</span>, we could replace this with a slightly more general thing: let’s think about computing “all possible denominators of the fraction <span class="math inline">\(\partial f/\partial *\)</span>”. At the very start, we only know how to compute one of these: <span class="math inline">\(\partial f/\partial f = 1\)</span>. It’s a bit weird to think about taking a derivative of a function with respect to itself. But if you think of it as a variable that has some constraints, then it makes sense: as long as you find a way to change the value of the variable, the rate of change of <span class="math inline">\(f\)</span> with respect to <span class="math inline">\(f\)</span> itself is just <span class="math inline">\(1\)</span>.</p>
+<p>Ok, so we found <span class="math inline">\(\partial f/\partial f = 1\)</span>. How does that help us at all? Well, we can use that to percolate the derivative information “backwards” up the expression tree.</p>
+<p>Say we want to find the derivative of <span class="math inline">\(f\)</span> with respect to <span class="math inline">\(d\)</span>. Because <span class="math inline">\(d\)</span> (and <span class="math inline">\(a\)</span>) define <span class="math inline">\(f\)</span> directly, this case is “easy”: we take the derivative of the whole expression <span class="math inline">\(f = a + d\)</span> with respect to <span class="math inline">\(d\)</span>, and get <span class="math inline">\(\partial f/\partial d = \partial a / \partial d + \partial d / \partial d\)</span>, or <span class="math inline">\(\partial f / \partial d = \partial d / \partial d = 1\)</span>. The same trick works for <span class="math inline">\(a\)</span> (and so <span class="math inline">\(\partial f / \partial a = 1\)</span>). However, for <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span> we need something different.</p>
+<p>Let’s start with <span class="math inline">\(b\)</span>. We want <span class="math inline">\(\partial f / \partial b\)</span>, so somewhere along the way we will need to take a derivative over <span class="math inline">\(b\)</span>. Since the only simple expression we have involving <span class="math inline">\(b\)</span> is <span class="math inline">\(d = b \times c\)</span>, we might as well take a derivative over <span class="math inline">\(b\)</span>, and get <span class="math inline">\(\partial d / \partial b = c\)</span>. And now, just like in the forward-mode case, we can use the chain rule: <span class="math inline">\(\partial f / \partial b = \partial f / \partial d \times \partial d / \partial b\)</span>. Since we know from before that <span class="math inline">\(\partial f / \partial d = 1\)</span>, we get <span class="math inline">\(\partial f / \partial b = c\)</span>. The same argument works for a derivative with respect to <span class="math inline">\(c\)</span>, and we get that the gradient will be <span class="math inline">\([1, c, b]\)</span>, as expected.</p>
+<p>In forward-mode autodiff, the chain rule lets us “push derivatives down the tree along with the values”; in reverse-mode autodiff, the chain rule lets us “push derivatives up the tree”: notice how <span class="math inline">\(\partial f / \partial b\)</span> is defined in terms of <span class="math inline">\(\partial f / \partial d\)</span>, a derivative that is “towards the bottom”. This really is working in the “reverse” direction of evaluation (and that’s why this is called “reverse-mode” autodiff), but the chain rule is symmetric, so it all works out.</p>
+<p>I’ve described to you in words how reverse-mode autodiff works, but haven’t really given you an algorithm that’s easy to implement.</p>
+<section id="pushing-derivatives-up" class="level2">
+<h2 class="anchored" data-anchor-id="pushing-derivatives-up">“Pushing derivatives up”</h2>
+<p>There’s a trick that highly simplifies the implementation of reverse-mode autodiff. The main issue with the above explanation is that the base case needs to be handled differently for every kind of expression, and there can be very many different expression kinds to handle: sums, products, sines, cosines, etc.</p>
+<p>It’s much easier to write the code if every base case behaves the same way. The trick to make everything uniform is simply to posit that the “reverse-mode pass” always starts at a special variable (let’s call it <span class="math inline">\(g\)</span>), and that <span class="math inline">\(g\)</span> is defined to be equal to the expression you care about (in our case <span class="math inline">\(g = f\)</span>).</p>
+<p>We’re almost ready to write the algorithm. But we need two reminders. First, in forward-mode autodiff, the derivative values of a node <span class="math inline">\(v\)</span> stored <span class="math inline">\(\partial v/\partial x\)</span>, where <span class="math inline">\(x\)</span> was the chosen variable of interest. In reverse-mode autodiff, the derivative values of a node <span class="math inline">\(v\)</span> will store <span class="math inline">\(\partial f/\partial v\)</span>, where <span class="math inline">\(f\)</span> is the overall expression. Second, the version of the chain rule which we need for reverse-mode autodiff is a little more general than what we’ve seen before. Specifically, we need to handle a situation when <span class="math inline">\(f\)</span> depends on <span class="math inline">\(x\)</span> through multiple “intermediate paths”. In that case, the chain rule sums over all of terms of each independent path: <span class="math display">\[ \frac{\partial f}{\partial x} = \sum_v \frac{\partial f}{\partial v} \frac{\partial v}{\partial x} \]</span></p>
+<p>With that in mind, here’s the algorithm for reverse-mode autodiff:</p>
+<ol type="1">
+<li><p>Evaluate the expression tree for the <em>values</em> as you would do in forward-mode autodiff, but without computing derivatives. This is the “forward pass”.</p></li>
+<li><p>Initialize the derivative values of all nodes to 0, except <span class="math inline">\(g\)</span>, which is initialized to 1.</p></li>
+<li><p>Traverse the computation graph in some topological order, from the node of the final expression (the “root” if it were a tree) up. The invariant we seek here is that by traversing the graph in this way, for every node we visit, the derivative of <span class="math inline">\(g\)</span> with respect to that node will have been fully computed by the time we visit it.</p></li>
+<li><p>When we visit a node, we “push derivatives up” the tree, <em>adding</em> the appropriate derivative values to the derivative of the node’s parents.</p></li>
+<li><p>When this “backward pass” is finished, each node’s derivative values will hold the value of the derivative of <span class="math inline">\(g\)</span> with respect to the node itself.</p></li>
+</ol>
+<p>Let’s make things more concrete. Consider, for example, the case where we visit the node <span class="math inline">\(d = c \times b\)</span>. By our invariant, at that point we will have fully computed <span class="math inline">\(\partial f / \partial d\)</span>. By taking the two possible derivatives, we see that <span class="math inline">\(\partial d / \partial b = c\)</span>, and <span class="math inline">\(\partial d / \partial c = b\)</span>. The chain rule says <span class="math inline">\(\partial f / \partial b = \sum_v (\partial f / \partial v) (\partial v / \partial b)\)</span>. Setting <span class="math inline">\(v = b\)</span> gives us <em>one</em> term of the sum, so we need to increment the currently-stored value of <span class="math inline">\(\partial f / \partial b\)</span> by <span class="math inline">\((\partial f / \partial d) \times c\)</span>. We increment (as opposed to storing) because there could be other nodes in the graph that <em>also</em> use <span class="math inline">\(b\)</span>, and those will eventually have to add their own contribution to the chain rule sum.</p>
+<p>As a result, reverse-mode autodiff “pushes derivatives” up the tree based on specific rules for each kind of expression, and you can derive each one of them by taking derivatives with respect to the possible parameters. Here are a few examples of the behavior of the algorithm when visiting nodes of different types, always assuming that <span class="math inline">\(g\)</span> is the variable representing the entire expression:</p>
+<ul>
+<li><span class="math inline">\(a = b + c\)</span> adds <span class="math inline">\(\partial g / \partial a\)</span> to both <span class="math inline">\(\partial g / \partial b\)</span> and <span class="math inline">\(\partial g / \partial c\)</span>,</li>
+<li><span class="math inline">\(a = b - c\)</span> adds <span class="math inline">\(\partial g / \partial a\)</span> to <span class="math inline">\(\partial g / \partial b\)</span>, and subtracts <span class="math inline">\(\partial g / \partial a\)</span> from <span class="math inline">\(\partial g / \partial c\)</span>,</li>
+<li><span class="math inline">\(a = \sin b\)</span> adds <span class="math inline">\((\partial g / \partial a) \times \cos b\)</span> to <span class="math inline">\(\partial g / \partial b\)</span>,</li>
+<li><span class="math inline">\(a = \log b\)</span> adds <span class="math inline">\((\partial g / \partial a) \times (1 / b)\)</span> to <span class="math inline">\(\partial g / \partial b\)</span>, etc.</li>
+</ul>
+<p>You can see this new algorithm in action below, again with uniformly random values between 0 and 1 assigned to the variables. First, the algorithm performs a forward pass to compute the expression values, and then the algorithm performs a backward pass, to propagate the derivatives up the tree back to the variables. Note that the derivatives with respect to the variable nodes here are represented in text field separate from the variable nodes. We do this so that different branches can refer to the same variable, and the derivative with respect to that variable can accumulate correctly.</p>
+<div id="rm-autodiff-exp">
+Expression: <input id="rm-autodiff-input" value="a + b * c"><button id="rm-autodiff-go">Compute gradient
+</button></div>
+<div id="rm-autodiff">
+
+</div>
+</section>
+<section id="backpropagation" class="level2">
+<h2 class="anchored" data-anchor-id="backpropagation">Backpropagation?</h2>
+<p>In neural networks, “reverse-mode autodiff” is often referred to as “error back-propagation”, from the paper that made it popular for <a href="http://www.cs.toronto.edu/~hinton/absps/naturebp.pdf">neural networks</a>. The general algorithm for reverse-mode automatic differentiation was known before the specific use-case was published for neural networks, and was developed in a <a href="https://en.wikipedia.org/wiki/Seppo_Linnainmaa">1970 master’s thesis</a> (!).</p>
+</section>
+</section>
+<section id="why-does-this-matter" class="level1">
+<h1>Why does this matter?</h1>
+<p>Although forward-mode autodiff is more straightforward than the reverse-mode varient, the performance gains of using reverse-mode autodiff in the case of gradient calculations are big. Consider, for example, the notorious <a href="https://arxiv.org/pdf/1409.1556.pdf">VGG19</a> neural network, which in 2014 set the state of the art for classification accuracy in a 1000-class image classification problem. It has 144 million parameters, so evaluating the gradient using forward-mode autodiff would have taken 144 million times as long, turning a problem which in 2014 took about 3 weeks to train into a problem that would have taken over 8 million years!</p>
+</section>
+<section id="acknowledgments" class="level1">
+<h1>Acknowledgments</h1>
+<p>Before I built this (and also during!), I extensively referenced <a href="https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation">Rufflewind’s AD tutorial</a>. I still highly recommend it.</p>
+<p>Thanks to Matthew Conlen for spotting mistakes on this.</p>
+<div class="cell">
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-2">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-3">
+
+</div>
+</div>
+</div>
+</div>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label" data-anchor-id="acknowledgments">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Automatic Differentiation</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">echo:</span><span class="co"> false</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="an">resources:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - expression.peg</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">"peg-0.10.0.js"</span><span class="kw">&gt;&lt;/script&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>Derivatives show up everywhere in data science, and most notably in</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>optimization, because of gradient descent (and its variants). Writing</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>derivatives by hand is error-prone and annoying, especially for</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>complicated expressions. Automatic differentiation ("autodiff") is an</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>algorithm that solves all of these problems: evaluating gradients is</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>usually only as expensive as evaluating the functions themselves, and</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>since it's the computer doing it, you're never going to miss a term</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>again. Autodiff is also the backbone of libraries like PyTorch and</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>TensorFlow.</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>Automatic differentiation works by traversing a data structure</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>representing the value we want to compute. People call this</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>"expression graph", "expression tree", or an "computation graph":</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>they're the same thing. Usually, we ask Python to compute</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>the value of an expression directly:</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; 3 + (5 * 6)</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="in">    33</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>Instead, we can build a data structure representing that, and ask</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>Python to derive the value:</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="in">    class Variable:</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, value):</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">            self.v = value</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="in">            return self.v</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="in">    class Sum:</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, left, right):</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="in">            self.l = left</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="in">            self.r = right</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="in">            return self.l.evaluate() + self.r.evaluate()</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="in">    class Mult:</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, left, right):</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="in">            self.l = left</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="in">            self.r = right</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="in">            return self.l.evaluate() * self.r.evaluate()</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; x = Sum(Variable(3), Mult(Variable(5), Variable(6)))</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; x.evaluate()</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="in">    33</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>(This is, in fact, pretty much how Python actually evaluates</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>expressions internally.)</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Given a computation graph, derivatives are *local*</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>The first important bit of intuition on how derivatives can be</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>computed comes from the way the chain rule works. You've probably seen</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>the chain rule written in this way:</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>$$ \frac{df}{dx} = \frac{df}{du} \times \frac{du}{dx} $$</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>This version of the chain rule says that if $f$ depends on $x$ only</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>through $u$, and $u$ depends on $x$, then the derivative $df/dx$ is</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>the product of the "immediate derivative" from $f$ to $u$, $df/du$,</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>and the "immediate derivative" from $u$ to $x$, $du/dx$.</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>This lets us compute the derivative of $f = \sin (\cos x)$ knowing</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>only the base case rules that if $u = \sin x$, then $du/dx = \cos x$,</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>and if $v = \cos x$, then $dv/dx = -\cos{x}$:</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>$$ df/dx = \cos (\cos x) \times - \sin (x) $$</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="fu"># Forward-mode autodiff</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>If we organize our computation in terms of nodes that know how to</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>evaluate their own derivatives, that computation will only need the</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>derivatives of the immediate neighbors.  This is because, as we saw above,</span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>the chain rule means that "dependencies propagate one node at a time".</span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>Imagine the computation of the example above, $3 + (5 \times 6)$, except</span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>that we create named variables: $a + bc$, $a = 3, b = 5, c =</span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>6$. Say we wanted to compute the derivative of that expression with</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>respect to $b$: $d <span class="sc">\{</span> a + bc <span class="sc">\}</span>/db = c = 6$. Can we come up with an</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>algorithmic way to do this? The easiest way is called "forward-mode</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>automatic differentiation".</span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## Just carry the derivatives with the values</span></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>If you inspect the source code for the Python evaluation library we</span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>wrote above, the evaluation of each node needs only to know the values</span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>of its immediate neighbors. Forward-mode autodiff simply takes this</span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>idea one step further, and carries the derivatives together with the</span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>values:</span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a><span class="in">    class Variable:</span></span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, value, derivative):</span></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a><span class="in">            self.v = value</span></span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a><span class="in">            self.d = derivative</span></span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a><span class="in">            return (self.v, self.d)</span></span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a><span class="in">    class Sum:</span></span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, left, right):</span></span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a><span class="in">            self.l = left</span></span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a><span class="in">            self.r = right</span></span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a><span class="in">            (left_v, left_d) = self.l.evaluate()</span></span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a><span class="in">            (right_v, right_d) = self.r.evaluate()</span></span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a><span class="in">            return (left_v + right_v, left_d + right_d)</span></span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a><span class="in">    class Mult:</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, left, right):</span></span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a><span class="in">            self.l = left</span></span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a><span class="in">            self.r = right</span></span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a><span class="in">            (left_v, left_d) = self.l.evaluate()</span></span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a><span class="in">            (right_v, right_d) = self.r.evaluate()</span></span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a><span class="in">            return (left_v * right_v,</span></span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a><span class="in">                    left_v * right_d + left_d * right_v) # product rule</span></span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; a = Variable(3, 0)</span></span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; b = Variable(5, 1)</span></span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; c = Variable(6, 0)</span></span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; x = Sum(a, Mult(b, c))</span></span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a><span class="in">    &gt;&gt;&gt; x.evaluate()</span></span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a><span class="in">    (33, 6)</span></span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a>There is a bit of a trick going on, which is how we encode which</span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>variable we are taking the derivative over. We simply ask variables to</span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>store the values of their derivatives with respect to whatever</span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>variable we're interested in. In our example, we want to take a</span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>derivative over $b$, and so $da/db = 0, db/db = 1, dc/db = 0$.</span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>Of course, you have to teach your library about other expressions and</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a>derivative rules as well:</span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a><span class="in">    class Sin:</span></span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, v):</span></span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a><span class="in">            self.v = v</span></span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a><span class="in">            (v, d) = self.v.evaluate()</span></span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a><span class="in">            return (math.sin(v), math.cos(v) * d)</span></span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a><span class="in">    class Cos:</span></span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a><span class="in">        def __init__(self, v):</span></span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a><span class="in">            self.v = v</span></span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a><span class="in">        def evaluate(self):</span></span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a><span class="in">            (v, d) = self.v.evaluate()</span></span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a><span class="in">            return (math.cos(v), -math.sin(v) * d)</span></span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a><span class="in">    # class Exp, Log, etc.</span></span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a>This is called *forward-mode* autodiff because the derivatives "flow</span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>forward" with the computation of values. You can see the algorithm in</span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a>action here, with uniformly random values between 0 and 1 assigned to</span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a>the variables:</span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"fm-autodiff-exp"</span><span class="kw">&gt;</span>Expression: <span class="kw">&lt;input</span> <span class="er">id</span><span class="ot">=</span><span class="st">"fm-autodiff-input"</span> <span class="er">value</span><span class="ot">=</span><span class="st">"a + b*c"</span><span class="kw">/&gt;&lt;button</span> <span class="er">id</span><span class="ot">=</span><span class="st">"fm-autodiff-go"</span><span class="kw">/&gt;</span>Compute d/da<span class="kw">&lt;/div&gt;</span></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"fm-autodiff"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a>This works well for simple expressions. However, consider the case of</span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>computing the *gradient* of a function: the vector of partial</span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a>derivatives with respect to all variables. If we want to use</span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>forward-mode autodiff to compute the gradient, we end up having to evaluate the</span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>same expression over and over again, just changing the values of the <span class="in">`d`</span> fields</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a>of the variables <span class="in">`a`</span>, <span class="in">`b`</span>, and <span class="in">`c`</span>. That's quite inefficient, so let's try to</span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a>identify where the inefficiency comes from.</span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>Pay attention to the partial derivatives we are computing with</span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>forward-mode autodiff.  For every invocation, we choose one variable</span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>to compute the derivative over. We are keeping the "denominator" of</span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a>the derivative fixed, and varying the "numerator" over all possible</span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>computation nodes. But a gradient does the opposite. It keeps the</span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a>"numerator" fixed, and varies the "denominator" over all variables of</span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a>the function: $\nabla f(x, y, z, w) = [ \partial f / \partial x,</span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>\partial f / \partial y, \partial f / \partial z, \partial f /</span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>\partial w ]$. So if we use forward-mode autodiff to compute</span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>gradients, all the computations of the derivatives of the intermediate</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>nodes are wasted.</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>There is a better way to do this! It's called reverse-mode autodiff.</span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a><span class="fu"># Reverse-mode Autodiff</span></span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a>Let's start with that same original expression, $f = a + bc$. First, you should convince yourself that the gradient of $f$, $\nabla f = <span class="co">[</span><span class="ot">\partial f/\partial a, \partial f/\partial b, \partial f/\partial c</span><span class="co">]</span>$ is equal to $<span class="co">[</span><span class="ot">1, c, b</span><span class="co">]</span>$, and then break $f$ into simple expressions:</span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>$$\begin{eqnarray*}d &amp;=&amp; b \times c\\ f &amp;=&amp; a + d\end{eqnarray*}$$</span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a>If we wanted to compute the gradient of $f$, we could replace this with a slightly more general thing: let's think about computing "all possible denominators of the fraction $\partial f/\partial *$". </span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>At the very start, we only know how to compute one of these: $\partial f/\partial f = 1$. </span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>It's a bit weird to think about taking a derivative of a function with respect to itself. </span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>But if you think of it as a variable that has some constraints, then it makes sense: as long as you find a way to change the value of the variable, the rate of change of $f$ with respect to $f$ itself is just $1$.</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a>Ok, so we found $\partial f/\partial f = 1$. How does that help us at all? </span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>Well, we can use that to percolate the derivative information "backwards" up the expression tree. </span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>Say we want to find the derivative of $f$ with respect to $d$. </span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>Because $d$ (and $a$) define $f$ directly, this case is "easy": we take the derivative of the whole expression $f = a + d$ with respect to $d$, and get $\partial f/\partial d = \partial a / \partial d + \partial d / \partial d$, or $\partial f / \partial d = \partial d / \partial d = 1$. </span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>The same trick works for $a$ (and so $\partial f / \partial a = 1$).</span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>However, for $b$ and $c$ we need something different.</span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a>Let's start with $b$. We want $\partial f / \partial b$, so somewhere</span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a>along the way we will need to take a derivative over $b$. Since the</span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a>only simple expression we have involving $b$ is $d = b \times c$,</span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a>we might as well take a derivative over $b$, and get $\partial d /</span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>\partial b = c$.  And now, just like in the forward-mode case, we can</span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a>use the chain rule: $\partial f / \partial b = \partial f / \partial d</span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a>\times \partial d / \partial b$. Since we know from before that</span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>$\partial f / \partial d = 1$, we get $\partial f / \partial b = c$. The</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>same argument works for a derivative with respect to $c$, and we get</span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>that the gradient will be $<span class="co">[</span><span class="ot">1, c, b</span><span class="co">]</span>$, as expected.</span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>In forward-mode autodiff, the chain rule lets us "push derivatives</span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>down the tree along with the values"; in reverse-mode autodiff, the</span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>chain rule lets us "push derivatives up the tree": notice how</span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>$\partial f / \partial b$ is defined in terms of $\partial f /</span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a>\partial d$, a derivative that is "towards the bottom". This really is</span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>working in the "reverse" direction of evaluation (and that's why this</span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a>is called "reverse-mode" autodiff), but the chain rule is symmetric,</span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>so it all works out.</span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>I've described to you in words how reverse-mode autodiff works, but haven't</span>
+<span id="cb5-230"><a href="#cb5-230" aria-hidden="true" tabindex="-1"></a>really given you an algorithm that's easy to implement.</span>
+<span id="cb5-231"><a href="#cb5-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-232"><a href="#cb5-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## "Pushing derivatives up"</span></span>
+<span id="cb5-233"><a href="#cb5-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-234"><a href="#cb5-234" aria-hidden="true" tabindex="-1"></a>There's a trick that highly simplifies the implementation of</span>
+<span id="cb5-235"><a href="#cb5-235" aria-hidden="true" tabindex="-1"></a>reverse-mode autodiff. The main issue with the above explanation is</span>
+<span id="cb5-236"><a href="#cb5-236" aria-hidden="true" tabindex="-1"></a>that the base case needs to be handled differently for every kind of</span>
+<span id="cb5-237"><a href="#cb5-237" aria-hidden="true" tabindex="-1"></a>expression, and there can be very many different expression kinds to</span>
+<span id="cb5-238"><a href="#cb5-238" aria-hidden="true" tabindex="-1"></a>handle: sums, products, sines, cosines, etc. </span>
+<span id="cb5-239"><a href="#cb5-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-240"><a href="#cb5-240" aria-hidden="true" tabindex="-1"></a>It's much easier to write the code if every base case behaves the same</span>
+<span id="cb5-241"><a href="#cb5-241" aria-hidden="true" tabindex="-1"></a>way.  The trick to make everything uniform is simply to posit that the</span>
+<span id="cb5-242"><a href="#cb5-242" aria-hidden="true" tabindex="-1"></a>"reverse-mode pass" always starts at a special variable (let's call it</span>
+<span id="cb5-243"><a href="#cb5-243" aria-hidden="true" tabindex="-1"></a>$g$), and that $g$ is defined to be equal to the expression you care</span>
+<span id="cb5-244"><a href="#cb5-244" aria-hidden="true" tabindex="-1"></a>about (in our case $g = f$).</span>
+<span id="cb5-245"><a href="#cb5-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-246"><a href="#cb5-246" aria-hidden="true" tabindex="-1"></a>We're almost ready to write the algorithm. But we need two reminders.</span>
+<span id="cb5-247"><a href="#cb5-247" aria-hidden="true" tabindex="-1"></a>First, in forward-mode autodiff, the derivative values of a node $v$</span>
+<span id="cb5-248"><a href="#cb5-248" aria-hidden="true" tabindex="-1"></a>stored $\partial v/\partial x$, where $x$ was the chosen variable of</span>
+<span id="cb5-249"><a href="#cb5-249" aria-hidden="true" tabindex="-1"></a>interest. In reverse-mode autodiff, the derivative values of a node</span>
+<span id="cb5-250"><a href="#cb5-250" aria-hidden="true" tabindex="-1"></a>$v$ will store $\partial f/\partial v$, where $f$ is the overall</span>
+<span id="cb5-251"><a href="#cb5-251" aria-hidden="true" tabindex="-1"></a>expression. Second, the version of the chain rule which we need for</span>
+<span id="cb5-252"><a href="#cb5-252" aria-hidden="true" tabindex="-1"></a>reverse-mode autodiff is a little more general than what we've seen</span>
+<span id="cb5-253"><a href="#cb5-253" aria-hidden="true" tabindex="-1"></a>before. Specifically, we need to handle a situation when $f$ depends</span>
+<span id="cb5-254"><a href="#cb5-254" aria-hidden="true" tabindex="-1"></a>on $x$ through multiple "intermediate paths".  In that case, the chain</span>
+<span id="cb5-255"><a href="#cb5-255" aria-hidden="true" tabindex="-1"></a>rule sums over all of terms of each independent path:</span>
+<span id="cb5-256"><a href="#cb5-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-257"><a href="#cb5-257" aria-hidden="true" tabindex="-1"></a>$$ \frac{\partial f}{\partial x} = \sum_v \frac{\partial f}{\partial v} \frac{\partial v}{\partial x} $$</span>
+<span id="cb5-258"><a href="#cb5-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-259"><a href="#cb5-259" aria-hidden="true" tabindex="-1"></a>With that in mind, here's the algorithm for reverse-mode autodiff:</span>
+<span id="cb5-260"><a href="#cb5-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-261"><a href="#cb5-261" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Evaluate the expression tree for the *values* as you would do in</span>
+<span id="cb5-262"><a href="#cb5-262" aria-hidden="true" tabindex="-1"></a>   forward-mode autodiff, but without computing derivatives. This is</span>
+<span id="cb5-263"><a href="#cb5-263" aria-hidden="true" tabindex="-1"></a>   the "forward pass".</span>
+<span id="cb5-264"><a href="#cb5-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-265"><a href="#cb5-265" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Initialize the derivative values of all nodes to 0, except $g$,</span>
+<span id="cb5-266"><a href="#cb5-266" aria-hidden="true" tabindex="-1"></a>   which is initialized to 1.</span>
+<span id="cb5-267"><a href="#cb5-267" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-268"><a href="#cb5-268" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Traverse the computation graph in some topological order, from the node of the</span>
+<span id="cb5-269"><a href="#cb5-269" aria-hidden="true" tabindex="-1"></a>   final expression (the "root" if it were a tree) up. The invariant</span>
+<span id="cb5-270"><a href="#cb5-270" aria-hidden="true" tabindex="-1"></a>   we seek here is that by traversing the graph in this way, for</span>
+<span id="cb5-271"><a href="#cb5-271" aria-hidden="true" tabindex="-1"></a>   every node we visit, the derivative of $g$ with respect to that node</span>
+<span id="cb5-272"><a href="#cb5-272" aria-hidden="true" tabindex="-1"></a>   will have been fully computed by the time we visit it. </span>
+<span id="cb5-273"><a href="#cb5-273" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-274"><a href="#cb5-274" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>When we visit a node, we "push derivatives up" the tree, *adding*</span>
+<span id="cb5-275"><a href="#cb5-275" aria-hidden="true" tabindex="-1"></a>   the appropriate derivative values to the derivative of the node's</span>
+<span id="cb5-276"><a href="#cb5-276" aria-hidden="true" tabindex="-1"></a>   parents.</span>
+<span id="cb5-277"><a href="#cb5-277" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb5-278"><a href="#cb5-278" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>When this "backward pass" is finished, each node's derivative</span>
+<span id="cb5-279"><a href="#cb5-279" aria-hidden="true" tabindex="-1"></a>   values will hold the value of the derivative of $g$ with respect to</span>
+<span id="cb5-280"><a href="#cb5-280" aria-hidden="true" tabindex="-1"></a>   the node itself.</span>
+<span id="cb5-281"><a href="#cb5-281" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb5-282"><a href="#cb5-282" aria-hidden="true" tabindex="-1"></a>Let's make things more concrete. Consider, for example, the case where</span>
+<span id="cb5-283"><a href="#cb5-283" aria-hidden="true" tabindex="-1"></a>we visit the node $d = c \times b$. By our invariant, at that point we</span>
+<span id="cb5-284"><a href="#cb5-284" aria-hidden="true" tabindex="-1"></a>will have fully computed $\partial f / \partial d$. By taking the two</span>
+<span id="cb5-285"><a href="#cb5-285" aria-hidden="true" tabindex="-1"></a>possible derivatives, we see that $\partial d / \partial b = c$, and</span>
+<span id="cb5-286"><a href="#cb5-286" aria-hidden="true" tabindex="-1"></a>$\partial d / \partial c = b$. The chain rule says $\partial f /</span>
+<span id="cb5-287"><a href="#cb5-287" aria-hidden="true" tabindex="-1"></a>\partial b = \sum_v (\partial f / \partial v) (\partial v / \partial</span>
+<span id="cb5-288"><a href="#cb5-288" aria-hidden="true" tabindex="-1"></a>b)$. Setting $v = b$ gives us *one* term of the sum, so we need to</span>
+<span id="cb5-289"><a href="#cb5-289" aria-hidden="true" tabindex="-1"></a>increment the currently-stored value of $\partial f / \partial b$ by</span>
+<span id="cb5-290"><a href="#cb5-290" aria-hidden="true" tabindex="-1"></a>$(\partial f / \partial d) \times c$. We increment (as opposed to storing) because there could be other</span>
+<span id="cb5-291"><a href="#cb5-291" aria-hidden="true" tabindex="-1"></a>nodes in the graph that *also* use $b$, and those will eventually have</span>
+<span id="cb5-292"><a href="#cb5-292" aria-hidden="true" tabindex="-1"></a>to add their own contribution to the chain rule sum.</span>
+<span id="cb5-293"><a href="#cb5-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-294"><a href="#cb5-294" aria-hidden="true" tabindex="-1"></a>As a result, reverse-mode autodiff "pushes derivatives" up the tree</span>
+<span id="cb5-295"><a href="#cb5-295" aria-hidden="true" tabindex="-1"></a>based on specific rules for each kind of expression, and you can</span>
+<span id="cb5-296"><a href="#cb5-296" aria-hidden="true" tabindex="-1"></a>derive each one of them by taking derivatives with respect to the</span>
+<span id="cb5-297"><a href="#cb5-297" aria-hidden="true" tabindex="-1"></a>possible parameters. Here are a few examples of the behavior of the</span>
+<span id="cb5-298"><a href="#cb5-298" aria-hidden="true" tabindex="-1"></a>algorithm when visiting nodes of different types, always assuming that</span>
+<span id="cb5-299"><a href="#cb5-299" aria-hidden="true" tabindex="-1"></a>$g$ is the variable representing the entire expression:</span>
+<span id="cb5-300"><a href="#cb5-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-301"><a href="#cb5-301" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>$a = b + c$ adds $\partial g / \partial a$ to both $\partial g / \partial b$ and $\partial g / \partial c$,</span>
+<span id="cb5-302"><a href="#cb5-302" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>$a = b - c$ adds $\partial g / \partial a$ to $\partial g / \partial b$, and subtracts $\partial g / \partial a$ from $\partial g / \partial c$,</span>
+<span id="cb5-303"><a href="#cb5-303" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>$a = \sin b$ adds $(\partial g / \partial a) \times \cos b$ to $\partial g / \partial b$,</span>
+<span id="cb5-304"><a href="#cb5-304" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>$a = \log b$ adds $(\partial g / \partial a) \times (1 / b)$ to $\partial g / \partial b$, etc.</span>
+<span id="cb5-305"><a href="#cb5-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-306"><a href="#cb5-306" aria-hidden="true" tabindex="-1"></a>You can see this new algorithm in action below, again with uniformly</span>
+<span id="cb5-307"><a href="#cb5-307" aria-hidden="true" tabindex="-1"></a>random values between 0 and 1 assigned to the variables.  First, the</span>
+<span id="cb5-308"><a href="#cb5-308" aria-hidden="true" tabindex="-1"></a>algorithm performs a forward pass to compute the expression values,</span>
+<span id="cb5-309"><a href="#cb5-309" aria-hidden="true" tabindex="-1"></a>and then the algorithm performs a backward pass, to propagate the</span>
+<span id="cb5-310"><a href="#cb5-310" aria-hidden="true" tabindex="-1"></a>derivatives up the tree back to the variables. Note that the</span>
+<span id="cb5-311"><a href="#cb5-311" aria-hidden="true" tabindex="-1"></a>derivatives with respect to the variable nodes here are represented in</span>
+<span id="cb5-312"><a href="#cb5-312" aria-hidden="true" tabindex="-1"></a>text field separate from the variable nodes.  We do this so that different branches can</span>
+<span id="cb5-313"><a href="#cb5-313" aria-hidden="true" tabindex="-1"></a>refer to the same variable, and the derivative with respect to that</span>
+<span id="cb5-314"><a href="#cb5-314" aria-hidden="true" tabindex="-1"></a>variable can accumulate correctly.</span>
+<span id="cb5-315"><a href="#cb5-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-316"><a href="#cb5-316" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"rm-autodiff-exp"</span><span class="kw">&gt;</span>Expression: <span class="kw">&lt;input</span> <span class="er">id</span><span class="ot">=</span><span class="st">"rm-autodiff-input"</span> <span class="er">value</span><span class="ot">=</span><span class="st">"a + b * c"</span><span class="kw">/&gt;&lt;button</span> <span class="er">id</span><span class="ot">=</span><span class="st">"rm-autodiff-go"</span><span class="kw">/&gt;</span>Compute gradient<span class="kw">&lt;/div&gt;</span></span>
+<span id="cb5-317"><a href="#cb5-317" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"rm-autodiff"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-318"><a href="#cb5-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-319"><a href="#cb5-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Backpropagation?</span></span>
+<span id="cb5-320"><a href="#cb5-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-321"><a href="#cb5-321" aria-hidden="true" tabindex="-1"></a>In neural networks, "reverse-mode autodiff" is often referred to as</span>
+<span id="cb5-322"><a href="#cb5-322" aria-hidden="true" tabindex="-1"></a>"error back-propagation", from the paper that made it popular for</span>
+<span id="cb5-323"><a href="#cb5-323" aria-hidden="true" tabindex="-1"></a>[neural</span>
+<span id="cb5-324"><a href="#cb5-324" aria-hidden="true" tabindex="-1"></a>networks](http://www.cs.toronto.edu/~hinton/absps/naturebp.pdf). The</span>
+<span id="cb5-325"><a href="#cb5-325" aria-hidden="true" tabindex="-1"></a>general algorithm for reverse-mode automatic differentiation was known</span>
+<span id="cb5-326"><a href="#cb5-326" aria-hidden="true" tabindex="-1"></a>before the specific use-case was published for neural networks,</span>
+<span id="cb5-327"><a href="#cb5-327" aria-hidden="true" tabindex="-1"></a>and was developed in a [1970 master's</span>
+<span id="cb5-328"><a href="#cb5-328" aria-hidden="true" tabindex="-1"></a>thesis](https://en.wikipedia.org/wiki/Seppo_Linnainmaa) (!).</span>
+<span id="cb5-329"><a href="#cb5-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-330"><a href="#cb5-330" aria-hidden="true" tabindex="-1"></a><span class="fu"># Why does this matter?</span></span>
+<span id="cb5-331"><a href="#cb5-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-332"><a href="#cb5-332" aria-hidden="true" tabindex="-1"></a>Although forward-mode autodiff is more straightforward than the reverse-mode varient, the performance gains of using reverse-mode autodiff in the case of gradient calculations are big.</span>
+<span id="cb5-333"><a href="#cb5-333" aria-hidden="true" tabindex="-1"></a>Consider, for example, the notorious <span class="co">[</span><span class="ot">VGG19</span><span class="co">](https://arxiv.org/pdf/1409.1556.pdf)</span> neural network, which in 2014 set the state of the art for classification accuracy in a 1000-class image classification problem. </span>
+<span id="cb5-334"><a href="#cb5-334" aria-hidden="true" tabindex="-1"></a>It has 144 million parameters, so evaluating the gradient using forward-mode autodiff would have taken 144 million times as long, turning a problem which in 2014 took about 3 weeks to train into a problem that would have taken over 8 million years!</span>
+<span id="cb5-335"><a href="#cb5-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-336"><a href="#cb5-336" aria-hidden="true" tabindex="-1"></a><span class="fu"># Acknowledgments</span></span>
+<span id="cb5-337"><a href="#cb5-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-338"><a href="#cb5-338" aria-hidden="true" tabindex="-1"></a>Before I built this (and also during!), I extensively referenced</span>
+<span id="cb5-339"><a href="#cb5-339" aria-hidden="true" tabindex="-1"></a>[Rufflewind's AD</span>
+<span id="cb5-340"><a href="#cb5-340" aria-hidden="true" tabindex="-1"></a>tutorial](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation). I</span>
+<span id="cb5-341"><a href="#cb5-341" aria-hidden="true" tabindex="-1"></a>still highly recommend it.</span>
+<span id="cb5-342"><a href="#cb5-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-343"><a href="#cb5-343" aria-hidden="true" tabindex="-1"></a>Thanks to Matthew Conlen for spotting mistakes on this.</span>
+<span id="cb5-344"><a href="#cb5-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-347"><a href="#cb5-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb5-348"><a href="#cb5-348" aria-hidden="true" tabindex="-1"></a><span class="in">//| output: false</span></span>
+<span id="cb5-349"><a href="#cb5-349" aria-hidden="true" tabindex="-1"></a><span class="in">import { cscheid } from "/js/cscheid/cscheid.js";</span></span>
+<span id="cb5-350"><a href="#cb5-350" aria-hidden="true" tabindex="-1"></a><span class="in">import { main } from "./main.js";</span></span>
+<span id="cb5-351"><a href="#cb5-351" aria-hidden="true" tabindex="-1"></a><span class="in">{</span></span>
+<span id="cb5-352"><a href="#cb5-352" aria-hidden="true" tabindex="-1"></a><span class="in">  cscheid.setup.setupGlobals({ d3 });</span></span>
+<span id="cb5-353"><a href="#cb5-353" aria-hidden="true" tabindex="-1"></a><span class="in">  main();</span></span>
+<span id="cb5-354"><a href="#cb5-354" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb5-355"><a href="#cb5-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { cscheid } from \"/js/cscheid/cscheid.js\";\nimport { main } from \"./main.js\";\n{\n  cscheid.setup.setupGlobals({ d3 });\n  main();\n}"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../explainers/automatic-differentiation";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+
+
+</body></html>

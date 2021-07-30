@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Randomized Response</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#randomized-response" class="nav-link active" data-scroll-target="#randomized-response">Randomized Response</a>
+<ul class="collapse">
+<li><a href="#estimating-the-true-response-rate" class="nav-link" data-scroll-target="#estimating-the-true-response-rate">Estimating the true response rate</a></li>
+<li><a href="#risks" class="nav-link" data-scroll-target="#risks">Risks</a></li>
+</ul></li>
+<li><a href="#takeaways" class="nav-link" data-scroll-target="#takeaways">Takeaways</a>
+<ul class="collapse">
+<li><a href="#references" class="nav-link" data-scroll-target="#references">References</a></li>
+</ul></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Randomized Response</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<section id="randomized-response" class="level1">
+<h1>Randomized Response</h1>
+<p>Imagine we want to estimate how many people in a population use a drug by asking them. People have an incentive to not answer truthfully, they’re concerned they might be implicated if there is a leak of that private information. Randomized response is a way to set up such a survey with sensitive questions to protects the respondents from privacy leaks. Although it was invented by Stanley Warner way back in the 60s, it is a good starting point in understanding “privacy-preserving data analysis”, which is a modern research area.</p>
+<p>The idea is to give respondents a plausible, “innocent” reason for answering “yes” to the implicating question, so that if a leak does happen, there is plausible deniability from the perspective of the respondent. A basic protocol for randomized response is to ask respondents to perform the following steps:</p>
+<ul>
+<li>Before answering the question, flip a coin.
+<ul>
+<li>If it comes out heads, answer the question truthfully.</li>
+<li>If it comes out tails, then flip another coin.
+<ul>
+<li>If the second flip comes out heads, respond “yes”.</li>
+<li>If the second flip comes out tails, respond “no”.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>On average, only half the respondents will be asked to respond truthfully. The other half will simply write the results of the coin flip. There are two important properties of this protocol.</p>
+<ol type="1">
+<li>Even if the analyst discloses the entire database, each respondent is “safe”, because there’s a 50-50 chance that their first coin flip came out heads, and so they responded at random. In other words, disclosing a “yes” answer is unlikely to incriminate anyone, because everyone answers “yes” with probability at least 1/2.</li>
+<li>We know that, on average, half the respondents will answer with the coin flip, while the other half will answer truthfully. This means we can recover a very good approximation of the results of the “full survey”</li>
+</ol>
+<section id="estimating-the-true-response-rate" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-true-response-rate">Estimating the true response rate</h2>
+<p>The result of the randomized response is a typical “biased” response, in the sense that the response we get is skewed in a particular way, and our goal is to “undo” this skew. In this case, there is one very simple analysis. If we have <span class="math inline">\(r\)</span> respondents, we know that the number of truthful answers will not be very far from <span class="math inline">\(r/2\)</span>, and so we estimate that <span class="math inline">\(r/2\)</span> of the answers are truthful. We then need to estimate the number of “truthful yes”s. We know that the number of “random yes”s is going to be about <span class="math inline">\(r/4\)</span>, from getting heads then heads from the coin flips.</p>
+<p>Let’s say that our biased survey has <span class="math inline">\(Y\)</span> yes’s and <span class="math inline">\(N\)</span> no’s. We simply “invent” an “estimated true survey” with a new number of responses <span class="math inline">\(Y' = Y - r/4\)</span> and <span class="math inline">\(N' = N - r/4\)</span>, with total respondents <span class="math inline">\(r' = Y' + N'\)</span>. Now we estimate that the fraction of people who truthfully would answer yes is <span class="math inline">\(Y'/r'\)</span>.</p>
+</section>
+<section id="risks" class="level2">
+<h2 class="anchored" data-anchor-id="risks">Risks</h2>
+<p>The neat thing about this protocol is that it does not require the respondent to trust the survey creator: the properties hold independent of the behavior of each party. Although it might intuitively seem that it doesn’t matter <em>at all</em> whether or not each individual’s responses are leaked, there is an important catch. This protection against leakage only works if the respondents don’t answer multiple independent surveys asking the same question. Imagine an extreme case where each respondent answers 1000 of these surveys and respects the protocol each time.</p>
+<p>Clearly, if only one of these datasets leak, then each of the respondents are not at high risk. But each additional leakage of a new dataset of the same questions <em>does</em> erode the privacy of the answer because for every individual respondent, we start to be able to accumulate a large number of independent runs of that protocol.</p>
+<p>Crucially, the same technique that we used to estimate the response rate for a <em>group</em> also works to estimate the true response of an individual. With a single run, there’s too much noise to make any real statement. But with many runs, eventually the true answer becomes clear and the respondent’s privacy is effectively ruined.</p>
+</section>
+</section>
+<section id="takeaways" class="level1">
+<h1>Takeaways</h1>
+<p>Randomized response shows that it’s possible to create protocols that enable “privacy-preserving data analysis”. They’re not a panacea, though, as the risks show.</p>
+<p>The risks also teach us that privacy loss is not always a “discrete” phenomenon: privacy losses can compound gradually. If data leaks happen, repeated randomized responses over related data will necessarily erode the privacy. In addition, there is a tradeoff going on between the accuracy we can obtain for some questions, and the privacy loss incurred.</p>
+<p>The best, modern answer we have in data analysis for this problem is the notion of <em>differential privacy</em>. Differential privacy <em>also</em> involves adding noise to answers, but in a fancier way.</p>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Warner, S.L. Randomized Response: A Survey Technique for Eliminating Evasive Answer Bias. Journal of the American Statistical Association, 60, 63–69. Taylor &amp; Francis, 1965.</li>
+</ul>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Randomized Response</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Randomized Response</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Imagine we want to estimate how many people in a population use a drug by asking them.</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>People have an incentive to not answer truthfully, they're concerned they might be implicated if there is a leak of that private information.</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Randomized response is a way to set up such a survey with sensitive questions to protects the respondents from privacy leaks.</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Although it was invented by Stanley Warner way back in the 60s, it is a good starting point in understanding "privacy-preserving data analysis", which is a modern research area.</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>The idea is to give respondents a plausible, "innocent" reason for answering "yes" to the implicating question, so that if a leak does happen, there is plausible deniability from the perspective of the respondent. </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>A basic protocol for randomized response is to ask respondents to perform the following steps:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Before answering the question, flip a coin.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>If it comes out heads, answer the question truthfully.</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>If it comes out tails, then flip another coin.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>If the second flip comes out heads, respond "yes".</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>If the second flip comes out tails, respond "no".</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>On average, only half the respondents will be asked to respond truthfully.</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>The other half will simply write the results of the coin flip.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>There are two important properties of this protocol.</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Even if the analyst discloses the entire database, each respondent is "safe", because there's a 50-50 chance that their first coin flip came out heads, and so they responded at random. In other words, disclosing a "yes" answer is unlikely to incriminate anyone, because everyone answers "yes" with probability at least 1/2.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>We know that, on average, half the respondents will answer with the coin flip, while the other half will answer truthfully. This means we can recover a very good approximation of the results of the "full survey"</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating the true response rate</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>The result of the randomized response is a typical "biased" response, in the sense that the response we get is skewed in a particular way, and our goal is to "undo" this skew. </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>In this case, there is one very simple analysis. </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>If we have $r$ respondents, we know that the number of truthful answers will not be very far from $r/2$, and so we estimate that $r/2$ of the answers are truthful. </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>We then need to estimate the number of "truthful yes"s. We know that the number of "random yes"s is going to be about $r/4$, from getting heads then heads from the coin flips. </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>Let's say that our biased survey has $Y$ yes's and $N$ no's. </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>We simply "invent" an "estimated true survey" with a new number of responses $Y' = Y - r/4$ and $N' = N - r/4$, with total respondents $r' = Y' + N'$. </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>Now we estimate that the fraction of people who truthfully would answer yes is $Y'/r'$.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Risks</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>The neat thing about this protocol is that it does not require the respondent to trust the survey creator: the properties hold independent of the behavior of each party. </span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>Although it might intuitively seem that it doesn't matter *at all* whether or not each individual's responses are leaked, there is an important catch.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>This protection against leakage only works if the respondents don't answer multiple independent surveys asking the same question.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Imagine an extreme case where each respondent answers 1000 of these surveys and respects the protocol each time.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>Clearly, if only one of these datasets leak, then each of the respondents are not at high risk. </span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>But each additional leakage of a new dataset of the same questions *does* erode the privacy of the answer because for every individual respondent, we start to be able to accumulate a large number of independent runs of that protocol. </span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>Crucially, the same technique that we used to estimate the response rate for a _group_ also works to estimate the true response of an individual. </span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>With a single run, there's too much noise to make any real statement. </span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>But with many runs, eventually the true answer becomes clear and the respondent's privacy is effectively ruined.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu"># Takeaways</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>Randomized response shows that it's possible to create protocols that enable "privacy-preserving data analysis". </span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>They're not a panacea, though, as the risks show.</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>The risks also teach us that privacy loss is not always a "discrete" phenomenon: privacy losses can compound gradually.</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>If data leaks happen, repeated randomized responses over related data will necessarily erode the privacy.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>In addition, there is a tradeoff going on between the accuracy we can obtain for some questions, and the privacy loss incurred.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>The best, modern answer we have in data analysis for this problem is the notion of *differential privacy*. </span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>Differential privacy *also* involves adding noise to answers, but in a fancier way.</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Warner, S.L. Randomized Response: A Survey Technique for Eliminating Evasive Answer Bias. Journal of the American Statistical Association, 60, 63--69. Taylor &amp; Francis, 1965.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

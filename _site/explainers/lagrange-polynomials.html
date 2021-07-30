@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Lagrange Polynomials</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../site_libs/quarto-html/quarto.js"></script>
+  <script src="../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#prologue-determining-roots-is-easy" class="nav-link active" data-scroll-target="#prologue-determining-roots-is-easy">Prologue: Determining roots is easy</a></li>
+<li><a href="#polynomials-are-vector-spaces-and-thats-almost-all-we-need" class="nav-link" data-scroll-target="#polynomials-are-vector-spaces-and-thats-almost-all-we-need">Polynomials are vector spaces, and that’s almost all we need</a></li>
+<li><a href="#why-do-we-care" class="nav-link" data-scroll-target="#why-do-we-care">Why do we care?</a></li>
+<li><a href="#demo" class="nav-link" data-scroll-target="#demo">Demo</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Lagrange Polynomials</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<p>Given a set of <span class="math inline">\(n\)</span> points <span class="math inline">\((x_i, y_i)\)</span>, we can create a polynomial <span class="math inline">\(f(x)\)</span> of degree at most <span class="math inline">\(n-1\)</span> such that <span class="math inline">\(f(x_i) = y_i\)</span>. Although it’s almost always better to do this through plain <a href="../explainers/linear-regression.html">linear regression</a>, it’s sometimes useful to know this can be done.</p>
+<p>In addition, the trick that we use to generate the polynomial is useful in other settings, and gives a different perspective on other data-fitting methods.</p>
+<section id="prologue-determining-roots-is-easy" class="level3">
+<h3 class="anchored" data-anchor-id="prologue-determining-roots-is-easy">Prologue: Determining roots is easy</h3>
+<p>If all we wanted was to find a non-trivial polynomial with given roots, then that would be dead simple. For every value <span class="math inline">\(x_i\)</span> for which we wanted the polynomial to be zero, we create a term <span class="math inline">\((x - x_i)\)</span>, and then take the product of all of those, since if any of the terms are zero, the product is zero.</p>
+<p>But for this interpolating polynomial, we don’t want the values to be zero; we want them to be <span class="math inline">\(y_i\)</span>. The Lagrange polynomials are built on a simple extension of this idea (if you were to take the <span class="math inline">\((x - x_i)\)</span> trick more directly head on, you would probably arrive at the idea of <a href="../explainers/newton-polynomials.html">Newton’s interpolating polynomial</a>).</p>
+</section>
+<section id="polynomials-are-vector-spaces-and-thats-almost-all-we-need" class="level2">
+<h2 class="anchored" data-anchor-id="polynomials-are-vector-spaces-and-thats-almost-all-we-need">Polynomials are vector spaces, and that’s almost all we need</h2>
+<p>It’s useful to think polynomials as linear combinations of the monomials <span class="math inline">\(x \mapsto x^k\)</span>, and (for example) subsets of those monomials forming different spaces. In this sense, the set <span class="math inline">\(\{x \mapsto x^0, x \mapsto x^1, x \mapsto x^2\}\)</span> forms a <em>basis</em> for all quadratic polynomials, since we can form any quadratic polynomial by weighting the basis vectors and adding them up.</p>
+<p>But we can take linear combinations of <em>any</em> sets of polynomials to create other vector (sub) spaces. For example, the set <span class="math inline">\(\{(1-x)^0, (1-x), (1-x)^2\}\)</span> <em>also</em> forms a basis for all quadratic polynomials; the only difference is that in order to express a quadratic in this basis, we need different weights than the monomial basis.</p>
+<p>The Lagrange interpolating polynomial is easiest to study by describing how to think of the basis it creates.</p>
+<p>Imagine first if we had polynomials <span class="math inline">\(b_i\)</span> for each input point <span class="math inline">\(x_i\)</span>, such that <span class="math inline">\(b_i(x_i) = 1\)</span>, and if <span class="math inline">\(i \neq j\)</span>, <span class="math inline">\(b_i(x_j) = 0\)</span>. If that were the case, then we could just use <span class="math inline">\(y_i\)</span> as the weights for combining the <span class="math inline">\(b_i\)</span> polynomials: <span class="math inline">\(f(x) = \sum_i y_i b_i(x)\)</span>. At a given <span class="math inline">\(x_i\)</span> point, all but <span class="math inline">\(b_i\)</span> is non-zero, which when multiplied by <span class="math inline">\(y_i\)</span> instantly gives <span class="math inline">\(f(x_i) = y_i\)</span>.</p>
+<p>So all that’s left is for us to find a way to construct these polynomials. That turns out not to be too difficult. Let’s say we have three points, <span class="math inline">\((x_0 = 1, y_0 = 3)\)</span>, <span class="math inline">\((x_1 = 3, y_1 = 6)\)</span>, and <span class="math inline">\((x_2 = 5, y_2 = 2)\)</span>. We need <span class="math inline">\(b_0(1) = 1\)</span>, <span class="math inline">\(b_0(3) = 0\)</span>, <span class="math inline">\(b_0(5) = 0\)</span>. As we’ve seen before, it’s easy to create a polynomial if all we need to do is control its roots. In this case, <span class="math inline">\(\tilde{b}_0(x) = (x - 3)(x - 5)\)</span> guarantees that the polynomial is zero exactly where we need it to be zero. Unfortunately, <span class="math inline">\(\tilde{b}_0(1)\)</span> is not equal to one. But we know it is equal to <span class="math inline">\((1-3)(1-5)\)</span>. So we simply divide <span class="math inline">\(\tilde{b}_0\)</span> by that, which doesn’t change the value at the roots since they were zero anyway. Do the same thing for <span class="math inline">\(b_1\)</span> and <span class="math inline">\(b_2\)</span>, and then add all three of them together, and you get the Lagrange polynomial.</p>
+</section>
+<section id="why-do-we-care" class="level2">
+<h2 class="anchored" data-anchor-id="why-do-we-care">Why do we care?</h2>
+<p>The generalizable principle here is that any time we fit functions to observations, it’s worth it to study the procedure by understanding what it does to datasets where the function is equal to <span class="math inline">\(1\)</span> at one of the points equal to <span class="math inline">\(0\)</span> elsewhere, because this usually creates a basis in the sense of linear algebra: a finite set of elements whose linear combinations covers (“spans”) the set of all possible elements we’re concerned with.</p>
+<p>In the case of Lagrange’s polynomials, this basis is <em>data-dependent</em>: more specifically, the basis changes as a function of the <span class="math inline">\(x\)</span> coordinates of the inputs, and the weights change as a function of the <span class="math inline">\(y\)</span> coordinates of the inputs. Seeing the method in this perspective lets us better understand its behavior.</p>
+<p>For example, in this case, we see that sufficiently far away from the points <span class="math inline">\(x_i\)</span>, this function will grow without bounds, because each of the <span class="math inline">\(b_i\)</span> basis functions grows to infinity by themselves; this makes Lagrange polynomials especially risky to use as <em>extrapolation</em> methods. Other methods have different such properties.</p>
+<p>For example, one way to think of <a href="https://en.wikipedia.org/wiki/Local_regression">LOWESS</a> is that it forces these basis functions to be zero by multiplying the polynomial by a function that goes to zero away from the points at a rate faster than the polynomials grow.</p>
+</section>
+<section id="demo" class="level2">
+<h2 class="anchored" data-anchor-id="demo">Demo</h2>
+<p>TBF.</p>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Lagrange Polynomials</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Given a set of $n$ points $(x_i, y_i)$, we can create a polynomial</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>$f(x)$ of degree at most $n-1$ such that $f(x_i) = y_i$. Although</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>it's almost always better to do this through plain [linear</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>regression](linear-regression.qmd), it's sometimes useful to know</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>this can be done.</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>In addition, the trick that we use to generate the polynomial is</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>useful in other settings, and gives a different perspective on other</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>data-fitting methods.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Prologue: Determining roots is easy</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>If all we wanted was to find a non-trivial polynomial with given</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>roots, then that would be dead simple. For every value $x_i$ for</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>which we wanted the polynomial to be zero, we create a term $(x -</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>x_i)$, and then take the product of all of those, since if any of the</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>terms are zero, the product is zero.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>But for this interpolating polynomial, we don't want the values to be</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>zero; we want them to be $y_i$. The Lagrange polynomials are built on</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>a simple extension of this idea (if you were to take the $(x - x_i)$</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>trick more directly head on, you would probably arrive at the idea of</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Newton's interpolating polynomial</span><span class="co">](newton-polynomials.qmd)</span>).</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Polynomials are vector spaces, and that's almost all we need</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>It's useful to think polynomials as linear combinations of the</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>monomials $x \mapsto x^k$, and (for example) subsets of those</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>monomials forming different spaces. In this sense, the set $<span class="sc">\{</span>x</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>\mapsto x^0, x \mapsto x^1, x \mapsto x^2<span class="sc">\}</span>$ forms a *basis* for all</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>quadratic polynomials, since we can form any quadratic polynomial by</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>weighting the basis vectors and adding them up.</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>But we can take linear combinations of *any* sets of polynomials to</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>create other vector (sub) spaces. For example, the set $<span class="sc">\{</span>(1-x)^0,</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>(1-x), (1-x)^2<span class="sc">\}</span>$ *also* forms a basis for all quadratic polynomials;</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>the only difference is that in order to express a quadratic in this</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>basis, we need different weights than the monomial basis.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>The Lagrange interpolating polynomial is easiest to study by</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>describing how to think of the basis it creates.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>Imagine first if we had polynomials $b_i$ for each input point</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>$x_i$, such that $b_i(x_i) = 1$, and if $i \neq j$, $b_i(x_j) =</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>0$. If that were the case, then we could just use $y_i$ as the</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>weights for combining the $b_i$ polynomials: $f(x) = \sum_i y_i</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>b_i(x)$. At a given $x_i$ point, all but $b_i$ is non-zero, which</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>when multiplied by $y_i$ instantly gives $f(x_i) = y_i$.</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>So all that's left is for us to find a way to construct these</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>polynomials. That turns out not to be too difficult. Let's say we have</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>three points, $(x_0 = 1, y_0 = 3)$, $(x_1 = 3, y_1 = 6)$, and</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>$(x_2 = 5, y_2 = 2)$. We need $b_0(1) = 1$, $b_0(3) = 0$, $b_0(5) =</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>0$.  As we've seen before, it's easy to create a polynomial if all we</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>need to do is control its roots.  In this case, $\tilde{b}_0(x) = (x -</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>3)(x - 5)$ guarantees that the polynomial is zero exactly where we</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>need it to be zero.  Unfortunately, $\tilde{b}_0(1)$ is not equal to</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>one. But we know it is equal to $(1-3)(1-5)$. So we simply divide</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>$\tilde{b}_0$ by that, which doesn't change the value at the roots</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>since they were zero anyway. Do the same thing for $b_1$ and $b_2$,</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>and then add all three of them together, and you get the Lagrange</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>polynomial.</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why do we care?</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>The generalizable principle here is that any time we fit functions to</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>observations, it's worth it to study the procedure by understanding</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>what it does to datasets where the function is equal to $1$ at one of</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>the points equal to $0$ elsewhere, because this usually creates a</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>basis in the sense of linear algebra: a finite set of elements whose</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>linear combinations covers ("spans") the set of all possible elements</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>we're concerned with.</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>In the case of Lagrange's polynomials, this basis is *data-dependent*:</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>more specifically, the basis changes as a function of the $x$</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>coordinates of the inputs, and the weights change as a function of the $y$</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>coordinates of the inputs. Seeing the method in this perspective lets us better understand its</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>behavior.</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>For example, in this case, we see that sufficiently far away from the</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>points $x_i$, this function will grow without bounds, because each of</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>the $b_i$ basis functions grows to infinity by themselves; this makes</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>Lagrange polynomials especially risky to use as *extrapolation*</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>methods. Other methods have different such properties.</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>For example, one way to think of</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">LOWESS</span><span class="co">](https://en.wikipedia.org/wiki/Local_regression)</span> is that it</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>forces these basis functions to be zero by multiplying the polynomial</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>by a function that goes to zero away from the points at a rate faster</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>than the polynomials grow.</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Demo</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>TBF.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

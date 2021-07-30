@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Integrating Ordinary Differential Equations Numerically</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#integrating-odes-numerically" class="nav-link active" data-scroll-target="#integrating-odes-numerically">Integrating ODEs Numerically</a></li>
+<li><a href="#basics" class="nav-link" data-scroll-target="#basics">Basics</a>
+<ul class="collapse">
+<li><a href="#euler-integration" class="nav-link" data-scroll-target="#euler-integration">Euler integration</a></li>
+<li><a href="#step-size-control" class="nav-link" data-scroll-target="#step-size-control">Step-size control</a></li>
+<li><a href="#predictor-corrector-methods" class="nav-link" data-scroll-target="#predictor-corrector-methods">Predictor-corrector methods</a></li>
+<li><a href="#runge-kutta-methods" class="nav-link" data-scroll-target="#runge-kutta-methods">Runge-Kutta methods</a>
+<ul class="collapse">
+<li><a href="#butcher-tableaus" class="nav-link" data-scroll-target="#butcher-tableaus">Butcher tableaus</a></li>
+</ul></li>
+<li><a href="#implicit-methods" class="nav-link" data-scroll-target="#implicit-methods">Implicit methods</a></li>
+</ul></li>
+<li><a href="#references" class="nav-link" data-scroll-target="#references">References</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Integrating Ordinary Differential Equations Numerically</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<section id="integrating-odes-numerically" class="level1">
+<h1>Integrating ODEs Numerically</h1>
+<p>This is a brief introduction to methods for finding numerical solutions to initial value problems in ordinary differential equations. This piece is biased towards the main application of interest for me, namely computing streamlines of vector fields.</p>
+</section>
+<section id="basics" class="level1">
+<h1>Basics</h1>
+<p>Consider the vector field below.</p>
+<div id="vf1" class="small-square-chart">
+
+</div>
+<p>The problem we are going to solve is that of computing <em>integral lines</em>, curves that are everywhere tangent to the vector field. More concretely, we are given a vector field <span class="math inline">\(v: R^2 \to R^2\)</span> and are looking for a parametric curve given by two functions of <span class="math inline">\(t\)</span>, <span class="math inline">\(x(t), y(t)\)</span> such that the initial value is given: <span class="math inline">\(x(0)=x_0\)</span>, <span class="math inline">\(y(0) = y_0\)</span>, and the tangent vector of the curve is equal to the vector field. Concretely speaking, we want that, at all values of <span class="math inline">\(t\)</span>, <span class="math inline">\(v(x(t),y(t)) = (x'(t), y'(t))\)</span> (we’re using <span class="math inline">\(f'\)</span> to denote the derivative of <span class="math inline">\(f\)</span> with respect to <span class="math inline">\(t\)</span> specifically).</p>
+<p>This particular vector field has an analytical definition, <span class="math inline">\(v(x, y) = (\cos(x + 2y), \sin(x - 2y))\)</span>. That we can write down a simple equation for it does not help very much in this case, because generally speaking, it will be hopeless to find a closed-form solution for all but the simplest initial value problems. So what we look for instead is a <em>numerical approximation</em> of the continuous curve <span class="math inline">\(x(t), y(t)\)</span> by a finite set of samples.</p>
+<section id="euler-integration" class="level2">
+<h2 class="anchored" data-anchor-id="euler-integration">Euler integration</h2>
+<p>Euler integration is by far the simplest method for solving ODEs numerically. The idea behind Euler integration is very simple: if at a given point we know the value of a vector field, and the vector field is continuous, then we expect it to not change very much in the neighborhood. More drastically, we assume it’s locally constant, so we can a step in the direction of the vector field. That lands us in a new spot in the plane, from which we sample the vector field again, and so on. The only free parameter is the size of the step we take, which we call <span class="math inline">\(h\)</span> here:</p>
+<pre><code>def euler_integration(vector_field, initial_x, initial_y, h):
+    t = 0
+    px = initial_x
+    py = initial_y
+    while True:
+        report_point(px, py, t)
+        (vx, vy) = vector_field(px, py)
+        px += vx * h
+        py += vy * h
+        t += h</code></pre>
+<p>(In practice, of course, we’d stop the process with some criterion) At first sight, this seems a reasonable way to compute approximations: as <span class="math inline">\(h\)</span> gets smaller, we take smaller steps, and if the vector field is continuous, then we should expect Euler integration to get progressively better. Here’s an example. Drag the black circle around to see different curves approximated with Euler integration:</p>
+<div id="vf2" class="small-square-chart">
+
+</div>
+<p>Things seem ok, right? But look at what happens when we try this much simpler vector field:</p>
+<div id="vf3" class="small-square-chart">
+
+</div>
+<p>This is the vector field <span class="math inline">\(v(x,y) = (-y, x)\)</span>. The integral lines of this vector field are circles (this is easy to see from <span class="math inline">\(\cos' = -\sin, \sin' = \cos\)</span>), but the approximation lines we get from Euler’s integration are spirals. Intuitively, this is relatively easy to understand: a finite step along the vector field always increases the distance from the origin. More importantly, the <em>fraction</em> with which the distance from the origin increases is the same at every step (by a simple argument of congruent triangles). This means that, as a function of <span class="math inline">\(t\)</span>, our approximation <span class="math inline">\(\tilde{x}(t), \tilde{y}(t)\)</span> is such that the distance from the origin increases <em>exponentially</em> as <span class="math inline">\(t\)</span> increases.</p>
+<p>This happens for real-world, more complicated vector fields. Consider the Lotka-Volterra equations, a pair of non-linear differential equations which model predator-prey relationships, <span class="math inline">\(u' = u(2-v), v' = v (u - 1)\)</span>.</p>
+<p>The integral lines of this model should be cycles, and yet,</p>
+<div id="vf4" class="small-square-chart">
+
+</div>
+<p>This is a serious problem. But how do we solve it?</p>
+</section>
+<section id="step-size-control" class="level2">
+<h2 class="anchored" data-anchor-id="step-size-control">Step-size control</h2>
+<p>One way to make the solution more accurate is to reduce the size of each step. However, reducing the step size by half doubles the amount of points which are used to cover a given interval in <span class="math inline">\(t\)</span>. Note, also, that in the Lotka-Volterra example above that the lengths of each of the steps can change quite a bit. So if reduce the parameter <span class="math inline">\(h\)</span> so that the largest distance between each pair of sampled values is small, then the <em>smallest</em> distance will be <em>very</em> small, which means that covering a lot of <span class="math inline">\(t\)</span> will take a huge number of steps.</p>
+<p>Instead, we could try to estimate the error we’re accruing at every step. One estimate of this error is one half of the length of the difference between the two consecutive vectors we sampled along the vector field, multiplied by <span class="math inline">\(h\)</span> (this comes from a Taylor series expansion of the approximations). So, if we set our parameter to be, instead of <span class="math inline">\(h\)</span>, a maximum tolerance for error <span class="math inline">\(T\)</span>, then we can make the steps bigger every time our error estimate says our integration is conservative, and make the steps smaller every time our error estimate says our integration is too aggressive:</p>
+<div id="vf5" class="small-square-chart">
+
+</div>
+<p>Notice how now the points are more evenly spaced around the curve, which means that as we make the step-size smaller, we use our samples more efficiently. Still, it remains the case that no matter how small we want our error is, it keeps getting compounded fairly fast. We need a different approach.</p>
+</section>
+<section id="predictor-corrector-methods" class="level2">
+<h2 class="anchored" data-anchor-id="predictor-corrector-methods">Predictor-corrector methods</h2>
+<p>The first algorithm that is good enough to be used in practice is so simple that it’s a bit magical. The idea is as follows. At each time step, we evaluate the vector field at the current point, which gives a future position using the Euler integration rules. Now, instead of simply jumping over to that position, we evaluate the vector field there, and take the <em>average</em> of the two vectors as the vector to use.</p>
+<pre><code>def euler_integration_pc(vector_field, initial_x, initial_y, h):
+    t = 0
+    px = initial_x
+    py = initial_y
+    while True:
+        report_point(px, py, t)
+        (vx,  vy)  = vector_field(px, py)
+        (vx2, vy2) = vector_field(px+h*vx, py+h*vy)
+        px += ((vx + vx2) / 2) * h
+        py += ((vy + vy2) / 2) * h
+        t += h</code></pre>
+<p>This seems like a minor change, but notice this:</p>
+<div class="chart">
+<span id="vf6" class="small-inline-square-chart"></span><span id="vf7" class="small-inline-square-chart"></span>
+</div>
+<p>Even with a very step size, the accumulation error has effectively disappeared! What gives? To get an intuition for the situation, let’s consider a different algorithm. Imagine that, instead of taking the average of <code>(vx, vy)</code> and <code>(vx2, vy2)</code>, we just took <code>(vx2, vy2)</code> as the value:</p>
+<pre><code>def weird_euler_integration(vector_field, initial_x, initial_y, h):
+    t = 0
+    px = initial_x
+    py = initial_y
+    while True:
+        report_point(px, py, t)
+        (vx,  vy)  = vector_field(px, py)
+        (vx2, vy2) = vector_field(px+h*vx, py+h*vy)
+        px += vx2 * h
+        py += vy2 * h
+        t += h</code></pre>
+<p>What happens then?</p>
+<div class="chart">
+<span id="vf8" class="small-inline-square-chart"></span><span id="vf9" class="small-inline-square-chart"></span>
+</div>
+<p>Now, instead of spiraling away from the center of the cyclic behavior, the approximation spirals <em>into</em> it. This is intuitively clear in the case of the circular vector field: using the vector from the “future” position of Euler integration makes the curve “turn too early”. Clearly, using the vector field from the present position makes the curve “turn too late” (since that’s the problem with Euler integration to begin with). So it must be the case that <em>some</em> average of the two approaches cancels the error out. What’s not so clear is that the correct weight is 1) independent of the actual vector field, and 2) equal to <span class="math inline">\(1/2\)</span>. While we won’t go into the derivation here, the easiest way to arrive at it is to first check that the averaging rule works assuming that the vector field is a linear function of its coordinates, and then generalize by taking appropriate Taylor series: you’ll get that the error for the method is essentially proportional to <span class="math inline">\(h^2\)</span>, and to the dominating term of the <em>quadratic</em> parameter of the Taylor series fit.</p>
+</section>
+<section id="runge-kutta-methods" class="level2">
+<h2 class="anchored" data-anchor-id="runge-kutta-methods">Runge-Kutta methods</h2>
+<p>What if we want a method that converges well if the vector field has significant quadratic terms? We use more sophisticated versions of the above idea, probing neighboring values of the vector field and averaging them appropriately. The most common such method is known as RK4, standing for Runge-Kutta’s 4th order method.</p>
+<p>TBF.</p>
+<section id="butcher-tableaus" class="level3">
+<h3 class="anchored" data-anchor-id="butcher-tableaus">Butcher tableaus</h3>
+<p>TBF.</p>
+</section>
+</section>
+<section id="implicit-methods" class="level2">
+<h2 class="anchored" data-anchor-id="implicit-methods">Implicit methods</h2>
+<p>TBF.</p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<ol type="1">
+<li>Butcher, <a href="http://onlinelibrary.wiley.com/book/10.1002/9780470753767">Numerical Methods for Ordinary Differential Equations</a>. Wiley, 2nd ed, 2008.</li>
+</ol>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label" data-anchor-id="references">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Integrating Ordinary Differential Equations Numerically</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Integrating ODEs Numerically</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>This is a brief introduction to methods for finding numerical</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>solutions to initial value problems in ordinary differential</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>equations. This piece is biased towards the main application of</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>interest for me, namely computing streamlines of vector fields.</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu"># Basics</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>Consider the vector field below.</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf1"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-square-chart"</span><span class="kw">&gt;&lt;/div&gt;</span>  </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>The problem we are going to solve is that of computing *integral</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>lines*, curves that are everywhere tangent to the vector field. More</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>concretely, we are given a vector field $v: R^2 \to R^2$ and are</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>looking for a parametric curve given by two functions of $t$, $x(t),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>y(t)$ such that the initial value is given: $x(0)=x_0$, $y(0) = y_0$,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>and the tangent vector of the curve is equal to the vector</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>field. Concretely speaking, we want that, at all values of $t$,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>$v(x(t),y(t)) = (x'(t), y'(t))$ (we're using $f'$ to denote the</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>derivative of $f$ with respect to $t$ specifically).</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>This particular vector field has an analytical definition, $v(x, y) =</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>(\cos(x + 2y), \sin(x - 2y))$. That we can write down a simple</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>equation for it does not help very much in this case, because</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>generally speaking, it will be hopeless to find a closed-form solution</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>for all but the simplest initial value problems. So what we look for</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>instead is a *numerical approximation* of the continuous curve $x(t),</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>y(t)$ by a finite set of samples.</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Euler integration</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>Euler integration is by far the simplest method for solving ODEs</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>numerically. The idea behind Euler integration is very simple: if at</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>a given point we know the value of a vector field, and the vector</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>field is continuous, then we expect it to not change very much in the</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>neighborhood. More drastically, we assume it's locally constant, so we</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>can a step in the direction of the vector field. That lands us in a</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>new spot in the plane, from which we sample the vector field again,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>and so on. The only free parameter is the size of the step we take,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>which we call $h$ here:</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="in">    def euler_integration(vector_field, initial_x, initial_y, h):</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="in">        t = 0</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="in">        px = initial_x</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="in">        py = initial_y</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="in">        while True:</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="in">            report_point(px, py, t)</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="in">            (vx, vy) = vector_field(px, py)</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="in">            px += vx * h</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="in">            py += vy * h</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="in">            t += h</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>(In practice, of course, we'd stop the process with some criterion)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>At first sight, this seems a reasonable way to compute approximations:</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>as $h$ gets smaller, we take smaller steps, and if the vector field is</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>continuous, then we should expect Euler integration to get</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>progressively better. Here's an example. Drag the black circle around</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>to see different curves approximated with Euler integration:</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf2"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-square-chart"</span><span class="kw">&gt;&lt;/div&gt;</span>  </span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>Things seem ok, right? But look at what happens when we try this much</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>simpler vector field:</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf3"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-square-chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>This is the vector field $v(x,y) = (-y, x)$. The integral lines of</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>this vector field are circles (this is easy to see from $\cos' =</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>-\sin, \sin' = \cos$), but the approximation lines we get from Euler's</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>integration are spirals. Intuitively, this is relatively easy to</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>understand: a finite step along the vector field always increases the</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>distance from the origin. More importantly, the *fraction* with which</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>the distance from the origin increases is the same at every step (by a simple</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>argument of congruent triangles). This means that, as a function of</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>$t$, our approximation $\tilde{x}(t), \tilde{y}(t)$ is such that the</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>distance from the origin increases *exponentially* as $t$ increases.</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>This happens for real-world, more complicated vector fields. Consider</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>the Lotka-Volterra equations, a pair of non-linear differential equations which </span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>model predator-prey relationships, $u' = u(2-v), v' = v (u - 1)$.</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>The integral lines of this model should be cycles, and yet,</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf4"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-square-chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>This is a serious problem. But how do we solve it?</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## Step-size control</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>One way to make the solution more accurate is to reduce the size of</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>each step.  However, reducing the step size by half doubles the amount</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>of points which are used to cover a given interval in $t$.  Note,</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>also, that in the Lotka-Volterra example above that the lengths of</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>each of the steps can change quite a bit. So if reduce the parameter</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>$h$ so that the largest distance between each pair of sampled values</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>is small, then the *smallest* distance will be *very* small, which means</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>that covering a lot of $t$ will take a huge number of steps.</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>Instead, we could try to estimate the error we're accruing at every</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>step. One estimate of this error is one half of the length of the</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>difference between the two consecutive vectors we sampled along the</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>vector field, multiplied by $h$ (this comes from a Taylor series</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>expansion of the approximations).  So, if we set our parameter to be,</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>instead of $h$, a maximum tolerance for error $T$, then we can make</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>the steps bigger every time our error estimate says our integration is</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>conservative, and make the steps smaller every time our error estimate</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>says our integration is too aggressive:</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf5"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-square-chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>Notice how now the points are more evenly spaced around the curve,</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>which means that as we make the step-size smaller, we use our samples</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>more efficiently.  Still, it remains the case that no matter how small</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>we want our error is, it keeps getting compounded fairly fast. We need</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>a different approach.</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a><span class="fu">## Predictor-corrector methods</span></span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>The first algorithm that is good enough to be used in practice is so</span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>simple that it's a bit magical. The idea is as follows. At each time</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>step, we evaluate the vector field at the current point, which gives a</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>future position using the Euler integration rules. Now, instead of</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>simply jumping over to that position, we evaluate the vector field</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>there, and take the *average* of the two vectors as the vector to use.</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a><span class="in">    def euler_integration_pc(vector_field, initial_x, initial_y, h):</span></span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a><span class="in">        t = 0</span></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a><span class="in">        px = initial_x</span></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a><span class="in">        py = initial_y</span></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="in">        while True:</span></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a><span class="in">            report_point(px, py, t)</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a><span class="in">            (vx,  vy)  = vector_field(px, py)</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a><span class="in">            (vx2, vy2) = vector_field(px+h*vx, py+h*vy)</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a><span class="in">            px += ((vx + vx2) / 2) * h</span></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="in">            py += ((vy + vy2) / 2) * h</span></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a><span class="in">            t += h</span></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>This seems like a minor change, but notice this:</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;span</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf6"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-inline-square-chart"</span><span class="kw">&gt;&lt;/span&gt;&lt;span</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf7"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-inline-square-chart"</span><span class="kw">&gt;&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>Even with a very step size, the accumulation error has</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>effectively disappeared! What gives? To get an intuition for the</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>situation, let's consider a different algorithm. Imagine that, instead</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>of taking the average of <span class="in">`(vx, vy)`</span> and <span class="in">`(vx2, vy2)`</span>, we just took <span class="in">`(vx2, vy2)`</span> as the value:</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="in">    def weird_euler_integration(vector_field, initial_x, initial_y, h):</span></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="in">        t = 0</span></span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a><span class="in">        px = initial_x</span></span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a><span class="in">        py = initial_y</span></span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a><span class="in">        while True:</span></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a><span class="in">            report_point(px, py, t)</span></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a><span class="in">            (vx,  vy)  = vector_field(px, py)</span></span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="in">            (vx2, vy2) = vector_field(px+h*vx, py+h*vy)</span></span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a><span class="in">            px += vx2 * h</span></span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a><span class="in">            py += vy2 * h</span></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a><span class="in">            t += h</span></span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>What happens then?</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;span</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf8"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-inline-square-chart"</span><span class="kw">&gt;&lt;/span&gt;&lt;span</span> <span class="er">id</span><span class="ot">=</span><span class="st">"vf9"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"small-inline-square-chart"</span><span class="kw">&gt;&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>Now, instead of spiraling away from the center of the cyclic behavior,</span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>the approximation spirals *into* it. This is intuitively clear in the</span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a>case of the circular vector field: using the vector from the "future" position</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>of Euler integration makes the curve "turn too early". Clearly, using</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>the vector field from the present position makes the curve "turn too</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>late" (since that's the problem with Euler integration to begin with).</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>So it must be the case that _some_ average of the two</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>approaches cancels the error out. What's not so clear is that the</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>correct weight is 1) independent of the actual vector field, and 2)</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>equal to $1/2$. While we won't go into the derivation here, the</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>easiest way to arrive at it is to first check that the averaging rule</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>works assuming that the vector field is a linear function of its</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>coordinates, and then generalize by taking appropriate Taylor series:</span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>you'll get that the error for the method is essentially proportional</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a>to $h^2$, and to the dominating term of the *quadratic* parameter of</span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>the Taylor series fit.</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## Runge-Kutta methods</span></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>What if we want a method that converges well if the vector field has</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>significant quadratic terms? We use more sophisticated versions of the</span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>above idea, probing neighboring values of the vector field and</span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>averaging them appropriately. The most common such method is known as</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>RK4, standing for Runge-Kutta's 4th order method.</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>TBF.</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### Butcher tableaus</span></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a>TBF.</span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implicit methods</span></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>TBF.</span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a><span class="fu"># References</span></span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Butcher, <span class="co">[</span><span class="ot">Numerical Methods for Ordinary Differential Equations</span><span class="co">](http://onlinelibrary.wiley.com/book/10.1002/9780470753767)</span>. Wiley, 2nd ed, 2008. </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

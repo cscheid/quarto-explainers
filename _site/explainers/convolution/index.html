@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Convolution</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script type="module" src="../../site_libs/quarto-ojs/ojs-bundle.js"></script>
+  <link href="../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#moving-averages" class="nav-link active" data-scroll-target="#moving-averages">Moving averages</a></li>
+<li><a href="#smoothing-filters" class="nav-link" data-scroll-target="#smoothing-filters">Smoothing filters</a></li>
+<li><a href="#properties" class="nav-link" data-scroll-target="#properties">Properties</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Convolution</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<p>The <em>convolution</em> is an operation that shows up very commonly in signal processing. It takes two functions as input and produces another function as the output. Here, we will use <span class="math inline">\(\star\)</span> to denote the operation, so we will think of <span class="math inline">\(f \star g\)</span> as producing a new function. The simplest definition of convolution is given element-wise: <span class="math display">\[(f \star g)(x) = \int_{-\infty}^\infty f(\tau)g(x - \tau) d\tau\]</span></p>
+<p>Unpacking this a little bit, each specific element of the domain of <span class="math inline">\(f \star g\)</span> is given by an integral over the entire real line. The integral operation is effectively a comparison between <span class="math inline">\(f\)</span> and a flipped, shifted version of <span class="math inline">\(g\)</span>, where the amount by which we shift <span class="math inline">\(g\)</span> is the parameter for the convolution. (We say “comparison” here in a specific sense: <span class="math inline">\(\int_{-\infty}^\infty f(x) g(x) dx\)</span> is a way to give a legitimate inner product to the vector space of functions <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and a good way to think of inner products is as a “similarity” between two objects.)</p>
+<p>This is much easier to understand with simple examples.</p>
+<section id="moving-averages" class="level2">
+<h2 class="anchored" data-anchor-id="moving-averages">Moving averages</h2>
+<div id="f-chart" class="widechart">
+
+</div>
+<div id="g-chart" class="widechart">
+
+</div>
+<div id="fg-chart" class="widechart">
+
+</div>
+<p>Often, we will think of one of the functions as a <em>filter</em> that changes the other function. In the example above, the rectangle function <span class="math inline">\(g\)</span> serves as a “local average”, which the convolution operation “spreads” throughout the domain of <span class="math inline">\(f\)</span>.</p>
+<p>(TODO: animate the rectangle sliding over <span class="math inline">\(f\)</span> on the bottom as the user hovers)</p>
+</section>
+<section id="smoothing-filters" class="level2">
+<h2 class="anchored" data-anchor-id="smoothing-filters">Smoothing filters</h2>
+<p>Taking a rectangle and convolving it with itself makes a progressively smoother function:</p>
+<div id="bspline0a-chart" class="widechart">
+
+</div>
+<div id="bspline1-chart" class="widechart">
+
+</div>
+<div id="bspline2-chart" class="widechart">
+
+</div>
+<div id="bspline3-chart" class="widechart">
+
+</div>
+</section>
+<section id="properties" class="level2">
+<h2 class="anchored" data-anchor-id="properties">Properties</h2>
+<ul>
+<li><p>Convolution is commutative <span class="math inline">\(f \star g = g \star f\)</span>; this means that you can choose any of the two functions to interpret at the “one which is shifting”.</p></li>
+<li><p>Convolution distributes with function sum; <span class="math inline">\(f \star (g + h) = f \star g + f \star h\)</span>.</p></li>
+<li><p>Convolution is associative: <span class="math inline">\(f \star (g \star h) = (f \star g) \star h\)</span>, and so we just write <span class="math inline">\(f \star g \star h\)</span> without risk of ambiguity. This also lets us replace repeated convolutions with different filters with a single convolution of the convolution of the filters. This is an important idea.</p></li>
+<li><p>The derivative of a convolution factors to <em>either</em> function. Using <span class="math inline">\(Df = D(f)(t) = (df/dx)(t)\)</span>, we have that <span class="math inline">\(D(f \star g)/dx = Df \star g = f \star Dg\)</span>. Using our filter interpretation above, this means that the derivative of the filtered function is the convolution of the function with the derivative of the filter. This is also an important idea.</p></li>
+<li><p>If you define <span class="math inline">\(If = I(f)(x)= \int_{-\infty}^{x} f(y) dy\)</span> as the operator that integrates a function, then <span class="math inline">\(I\)</span> also factors in the same way as above: <span class="math inline">\(I(f \star g) = I(f) \star g = f \star I(g)\)</span>. Combined, these two properties allow us to, under a convolution cancel integrations on <span class="math inline">\(f\)</span> with derivatives on <span class="math inline">\(g\)</span> and vice-versa. Since <span class="math inline">\(I(D(f)) = f = D(I(f))\)</span>, clearly we have <span class="math inline">\(I(f) \star D(g) = f \star I(D(g)) = f \star g\)</span>, etc.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-2">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-3">
+
+</div>
+</div>
+</div>
+</div>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Convolution</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>The _convolution_ is an operation that shows up very commonly in</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>signal processing. It takes two functions as input and produces</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>another function as the output. Here, we will use $\star$ to denote</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>the operation, so we will think of $f \star g$ as producing a new</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>function. The simplest definition of convolution is given element-wise:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>$$(f \star g)(x) = \int_{-\infty}^\infty f(\tau)g(x - \tau) d\tau$$</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Unpacking this a little bit, each specific element of the domain of $f</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>\star g$ is given by an integral over the entire real line. The</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>integral operation is effectively a comparison between $f$ and a</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>flipped, shifted version of $g$, where the amount by which we shift</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>$g$ is the parameter for the convolution. (We say "comparison" here in</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>a specific sense: $\int_{-\infty}^\infty f(x) g(x) dx$ is a way to</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>give a legitimate inner product to the vector space of functions <span class="ot">[^1]</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>and a good way to think of inner products is as a "similarity" between</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>two objects.)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>This is much easier to understand with simple examples.</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Moving averages</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"f-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"g-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"fg-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>Often, we will think of one of the functions as a _filter_ that</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>changes the other function. In the example above, the rectangle</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>function $g$ serves as a "local average", which the convolution</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>operation "spreads" throughout the domain of $f$.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>(TODO: animate the rectangle sliding over $f$ on the bottom as</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>the user hovers)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Smoothing filters</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Taking a rectangle and convolving it with itself makes a progressively</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>smoother function:</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline0a-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span>  </span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline1-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span>  </span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline2-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span>  </span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline3-chart"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"widechart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Properties</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Convolution is commutative $f \star g = g \star f$; this means that</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  you can choose any of the two functions to interpret at the "one</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  which is shifting".</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Convolution distributes with function sum; $f \star (g + h) = f</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  \star g + f \star h$.</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Convolution is associative: $f \star (g \star h) = (f \star g) \star</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  h$, and so we just write $f \star g \star h$ without risk of</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  ambiguity. This also lets us replace repeated convolutions with</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  different filters with a single convolution of the convolution of</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  the filters. This is an important idea.</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The derivative of a convolution factors to _either_ function. Using $Df = D(f)(t) = (df/dx)(t)$,</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>  we have that $D(f \star g)/dx = Df \star g = f \star Dg$. Using our filter</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>  interpretation above, this means that the derivative of the filtered</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>  function is the convolution of the function with the derivative of</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>  the filter. This is also an important idea.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>If you define $If = I(f)(x)= \int_{-\infty}^{x} f(y) dy$ as the operator </span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  that integrates a function, then $I$ also factors in the same way as above:</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  $I(f \star g) = I(f) \star g = f \star I(g)$. Combined, these two properties allow us</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  to, under a convolution cancel integrations on $f$ with</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  derivatives on $g$ and vice-versa. Since $I(D(f)) = f = D(I(f))$, clearly we have</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>  $I(f) \star D(g) = f \star I(D(g)) = f \star g$, etc.</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>If you want to be mathematically precise about it, this definition of inner product only works in a slightly more complicated setting, because some functions can differ in small number of places and still have the same inner products. This is handled by sending functions into appropriate equivalence classes.</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="in">//| output: false</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="in">//| echo: false</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="in">import { cscheid } from "/js/cscheid/cscheid.js";</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="in">import { main } from "./main.js";</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="in">{</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="in">  cscheid.setup.setupGlobals({ d3 });</span></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="in">  main();</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+<section class="footnotes" role="doc-endnotes"><h2>Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>If you want to be mathematically precise about it, this definition of inner product only works in a slightly more complicated setting, because some functions can differ in small number of places and still have the same inner products. This is handled by sending functions into appropriate equivalence classes.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { cscheid } from \"/js/cscheid/cscheid.js\";\nimport { main } from \"./main.js\";\n{\n  cscheid.setup.setupGlobals({ d3 });\n  main();\n}"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../explainers/convolution";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+
+
+</body></html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Linear function spaces</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#linear-function-spaces-and-reconstruction-kernels" class="nav-link active" data-scroll-target="#linear-function-spaces-and-reconstruction-kernels">Linear function spaces (and reconstruction kernels)</a>
+<ul class="collapse">
+<li><a href="#basic-example" class="nav-link" data-scroll-target="#basic-example">Basic Example</a></li>
+<li><a href="#polynomials-are-not-great-for-this-job" class="nav-link" data-scroll-target="#polynomials-are-not-great-for-this-job">Polynomials are not great for this job</a></li>
+<li><a href="#shifted-versions-of-the-same-function" class="nav-link" data-scroll-target="#shifted-versions-of-the-same-function">Shifted Versions of the same function</a></li>
+<li><a href="#b-spline-kernels" class="nav-link" data-scroll-target="#b-spline-kernels">B-Spline kernels</a>
+<ul class="collapse">
+<li><a href="#b-spline-of-order-0" class="nav-link" data-scroll-target="#b-spline-of-order-0">B-Spline of order 0</a></li>
+<li><a href="#linear-order-1-b-spline" class="nav-link" data-scroll-target="#linear-order-1-b-spline">Linear (order-1) B-Spline</a></li>
+<li><a href="#quadratic-order-2-b-spline" class="nav-link" data-scroll-target="#quadratic-order-2-b-spline">Quadratic (order-2) B-Spline</a></li>
+</ul></li>
+<li><a href="#multi-dimensional-linear-function-spaces" class="nav-link" data-scroll-target="#multi-dimensional-linear-function-spaces">Multi-dimensional linear function spaces</a>
+<ul class="collapse">
+<li><a href="#separable-kernels" class="nav-link" data-scroll-target="#separable-kernels">Separable kernels</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#more-reading" class="nav-link" data-scroll-target="#more-reading">More reading</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Linear function spaces</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<section id="linear-function-spaces-and-reconstruction-kernels" class="level1">
+<h1>Linear function spaces (and reconstruction kernels)</h1>
+<p>(Brief intro to using linear function spaces and reconstruction kernels to represent continuous functions in a computer. Heavily geared to data visualization, of the specific “scientific” variety.)</p>
+<p>In data visualization (and more generally, in the subfields of data analysis that tend to care about spatial data), we often want to use computers to store, manipulate, and represent <em>functions</em>. Consider, for example, a map of surface temperature over a region. For any point in the region, we can in principle read off the temperature. There are, then, infinitely many points (uncountably many, in fact). This presents a challenge for representing these functions as arrays of data in a computer. At the same time, we know it’s possible to write computer procedures that produce answers for an infinity of possible inputs:</p>
+<pre><code>def f(x):
+    return x * x
+
+def g(x):
+    if x &lt;= -1/2: return 0
+    if x &gt;= 1/2: return 0
+    return 1</code></pre>
+<p>Functions like <code>f</code> and <code>g</code> are easy to write, but we want to avoid having to write new functions for every new data observation that we have. Consider the difference between a temperature map in the summer and one in the winter. Ideally, we would not have to change the way we write our functions very much to switch from a representation of the summer map to the winter map.</p>
+<p>Our solution is to define a <em>space</em> of possible functions that is created by linear combinations of simpler functions. Of course, you’ve seen this kind of thing before. The space of all linear functions on the reals <span class="math inline">\(R \to R\)</span> can be created by giving different <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> values to <code>line</code>:</p>
+<section id="basic-example" class="level2">
+<h2 class="anchored" data-anchor-id="basic-example">Basic Example</h2>
+<pre><code>def constant(x):
+    return 1
+
+def line(x):
+    return x
+
+def line(a, b):
+    def f(x):
+        return a * constant(x) + b * line(x)
+    return f
+
+# line(1, 3)(5) == 16</code></pre>
+<div id="linear-functions" class="chart">
+
+</div>
+<p>Each different function in this space, then, is completely characterized by the array of weights we use, making the space very convenient for storage and representation on computers.</p>
+</section>
+<section id="polynomials-are-not-great-for-this-job" class="level2">
+<h2 class="anchored" data-anchor-id="polynomials-are-not-great-for-this-job">Polynomials are not great for this job</h2>
+<p>One standard way of creating new functions (so that our basis gets richer and we can create more interesting linear function spaces) is to take powers of existing functions. For example, taking linear combinations of non-negative powers of the identity function yields the space of all polynomials. This is a very rich space, but is <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">not very good for approximation when you have equally-spaced values</a>. Let’s see what happens when we try to approximate the Runge function, <span class="math inline">\(f(x) = 1 / (1 + 25x^2)\)</span>, using progressively larger-degree polynomials (depicted by darker, thicker lines), such that your polynomial always matches the values of the function that you have observed:</p>
+<div id="runge-phenomenon" class="chart">
+
+</div>
+<p>As you can see, the higher-degree polynomial fits match the sampled data at more points, but they start to “wiggle” more, such that in between the observed points, the values oscillate wildly.</p>
+</section>
+<section id="shifted-versions-of-the-same-function" class="level2">
+<h2 class="anchored" data-anchor-id="shifted-versions-of-the-same-function">Shifted Versions of the same function</h2>
+<p>Instead, we’ll build our space by taking simple functions that have finite support, and shifting them around:</p>
+<pre><code>def square(x):
+    if x &lt;= -1/2: return 0
+    if x &gt;= 1/2: return 0
+    return 1
+
+def shifted_square(i):
+    def f(x):
+        return shifted_square(x - i)
+    return f</code></pre>
+<div id="square-functions" class="chart">
+
+</div>
+<p>Now linear function spaces of (progressively more) shifted squares do something more interesting:</p>
+<div id="square-runge" class="chart">
+
+</div>
+<p>When we try to approximate the same function as before, the sampled values (and the rectangles) track the function progressively better and better, and the approximation function does not oscillate. Of course, we lost something in this exchange. The polynomial fits we obtained were smooth: this means that we had access to function derivatives, which are useful in a variety of settings. The function fits we got aren’t even continuous; that’s not ideal.</p>
+<p>Fortunately, this is a situation which we can easily fix by creating better “simple functions”. Also, from now on, we will call these simple functions <em>reconstruction kernels</em>, or <em>kernels</em> for short. (Notice that the term kernel is used in statistics to denote a completely different notion. The confusion is most often avoided by noticing that reconstruction kernels take a single parameter while similarity kernels from statistics are always two-parameter functions that compare values.)</p>
+</section>
+<section id="b-spline-kernels" class="level2">
+<h2 class="anchored" data-anchor-id="b-spline-kernels">B-Spline kernels</h2>
+<pre><code>def b0(x):
+    if x &lt;= -1/2: return 0
+    if x &gt;= 1/2: return 0
+    return 1
+def b1(x):
+    if x &lt;= -1: return 0
+    if x &lt;= 0:  return 1+x
+    if x &lt;= 1:  return 1-x
+    return 0
+def b2(x):
+    # ...</code></pre>
+<p>So, how do we create function spaces that aren’t prone to oscillation, but allow smooth functions? We use kernels that are themselves continuous, or smooth. In the examples below, we are creating functions by giving weights <span class="math inline">\([0.4, 0.3, 0.5, 0.7, 0.6]\)</span> to each of the basis functions in order. Because the basis functions are different, the reconstructed function is itself different.</p>
+<section id="b-spline-of-order-0" class="level3">
+<h3 class="anchored" data-anchor-id="b-spline-of-order-0">B-Spline of order 0</h3>
+<div id="bspline-0" class="chart">
+
+</div>
+</section>
+<section id="linear-order-1-b-spline" class="level3">
+<h3 class="anchored" data-anchor-id="linear-order-1-b-spline">Linear (order-1) B-Spline</h3>
+<div id="bspline-1" class="chart">
+
+</div>
+</section>
+<section id="quadratic-order-2-b-spline" class="level3">
+<h3 class="anchored" data-anchor-id="quadratic-order-2-b-spline">Quadratic (order-2) B-Spline</h3>
+<div id="bspline-2" class="chart">
+
+</div>
+<p>A proper discussion of reconstruction kernels is far beyond the scope of this (and any one) piece; see <a href="../b_splines/index.html">this</a> piece instead.</p>
+<p>Note, though, that as the reconstruction kernels get smoother, so do the reconstructions. This happens because of a trivial, but very important property of linear function spaces: since these are linear spaces, function operations that are themselves linear will factor through to the basis functions. For example, the derivative is a linear operator. As a result, the derivative of a function from a linear function space is necessarily a member of a <em>different</em> linear function space, whose basis vectors are the derivatives of the basis vectors of the original function space:</p>
+<p><span class="math display">\[d/dx \left ( \sum_i c_i \phi_i(x) \right ) = \sum_i c_i \left (\frac{d \phi(x)}{dx} \right)\]</span></p>
+<p>The same thing happens for integrals, expectations, convolutions, etc. This makes linear function spaces very computationally convenient.</p>
+</section>
+</section>
+<section id="multi-dimensional-linear-function-spaces" class="level2">
+<h2 class="anchored" data-anchor-id="multi-dimensional-linear-function-spaces">Multi-dimensional linear function spaces</h2>
+<p>So far, we’ve seen function spaces whose domain are the real numbers (a one-dimensional space). It is straightforward to extend the notion to multidimensional functions: we just change the domain of the function to operate on <span class="math inline">\(R^n\)</span> instead of <span class="math inline">\(R\)</span>. The only significant change is that our reconstruction kernels need to be themselves two-dimensional.</p>
+<p>Do note here a bit of terminological ambiguity: in this context, we are using “multi-dimensional” to refer to the domain of the function, not to the dimension of the space (as in its rank).</p>
+<section id="separable-kernels" class="level3">
+<h3 class="anchored" data-anchor-id="separable-kernels">Separable kernels</h3>
+<p>The most common way to create multi-dimensional reconstruction kernels is to do it one dimension at a time. Concretely speaking, the space of all possible multidimensional reconstruction kernels is very large, and one natural solution is to look for kernels that <em>factor</em>:</p>
+<p><span class="math display">\[K(x,y) = k_x(x) k_y(y)\]</span></p>
+<p>Using B-Splines as the separable filters is very common, and very convenient.</p>
+<p>TODO: Add illustrations of a simple 2D function using <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>, <span class="math inline">\(\beta_2\)</span> as the separable filters.</p>
+</section>
+</section>
+</section>
+<section id="more-reading" class="level1">
+<h1>More reading</h1>
+<ul>
+<li><p><a href="two-d/">2D example</a>.</p></li>
+<li><p>Mitchell and Netravalli, <a href="https://dl.acm.org/citation.cfm?id=378514">Reconstruction Filters in Computer Graphics</a>, SIGGRAPH ’88. A classic in the area.</p></li>
+<li><p>Moller et al, <a href="http://ieeexplore.ieee.org/document/729596/">Design of Accurate and Smooth filters for function</a>, VolVis 1998. How to design filters in order to get good spatial properties out of them.</p></li>
+</ul>
+<script type="module" src="./main.js"></script>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label" data-anchor-id="more-reading">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Linear function spaces</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">styles:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - main.css</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">"https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"</span><span class="kw">&gt;&lt;/script&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Linear function spaces (and reconstruction kernels)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>(Brief intro to using linear function spaces and reconstruction kernels</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>to represent continuous functions in a computer. Heavily geared to</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>data visualization, of the specific "scientific" variety.)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>In data visualization (and more generally, in the subfields of data</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>analysis that tend to care about spatial data), we often want to</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>use computers to store, manipulate, and represent</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>_functions_. Consider, for example, a map of surface temperature over</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>a region. For any point in the region, we can in principle read off</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>the temperature. There are, then, infinitely many points (uncountably</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>many, in fact). This presents a challenge for representing these</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>functions as arrays of data in a computer. At the same time, we know</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>it's possible to write computer procedures that produce answers</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>for an infinity of possible inputs:</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="in">    def f(x):</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="in">        return x * x</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="in">    def g(x):</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= -1/2: return 0</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &gt;= 1/2: return 0</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="in">        return 1</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>Functions like <span class="in">`f`</span> and <span class="in">`g`</span> are easy to write, but we want to avoid</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>having to write new functions for every new data observation that we</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>have. Consider the difference between a temperature map in the summer</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>and one in the winter. Ideally, we would not have to change the way we</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>write our functions very much to switch from a representation of the</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>summer map to the winter map.</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>Our solution is to define a _space_ of possible functions that is</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>created by linear combinations of simpler functions. Of course, you've</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>seen this kind of thing before. The space of all linear functions on</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>the reals $R \to R$ can be created by giving different $a$ and $b$</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>values to <span class="in">`line`</span>:</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Basic Example</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="in">    def constant(x):</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="in">        return 1</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="in">    def line(x):</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="in">        return x</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="in">    def line(a, b):</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="in">        def f(x):</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="in">            return a * constant(x) + b * line(x)</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="in">        return f</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="in">    # line(1, 3)(5) == 16</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"linear-functions"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>Each different function in this space, then, is completely</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>characterized by the array of weights we use, making the space very</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>convenient for storage and representation on computers.</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## Polynomials are not great for this job</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>One standard way of creating new functions (so that our basis gets richer and</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>we can create more interesting linear function spaces) is to take</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>powers of existing functions. For example, taking linear combinations of non-negative powers of the</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>identity function yields the space of all polynomials. This is a very</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>rich space, but is [not very good for approximation when you have</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>equally-spaced values](https://en.wikipedia.org/wiki/Runge%27s_phenomenon). </span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>Let's see what happens when we try to approximate the Runge function,</span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>$f(x) = 1 / (1 + 25x^2)$, using progressively larger-degree</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>polynomials (depicted by darker, thicker lines), such that your polynomial always matches the values of</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>the function that you have observed:</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"runge-phenomenon"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>As you can see, the higher-degree polynomial fits match the sampled</span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>data at more points, but they start to "wiggle" more, such that in</span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>between the observed points, the values oscillate wildly.</span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Shifted Versions of the same function</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>Instead, we'll build our space by taking simple functions that have</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>finite support, and shifting them around:</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a><span class="in">    def square(x):</span></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= -1/2: return 0</span></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &gt;= 1/2: return 0</span></span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a><span class="in">        return 1</span></span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a><span class="in">    def shifted_square(i):</span></span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a><span class="in">        def f(x):</span></span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="in">            return shifted_square(x - i)</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a><span class="in">        return f</span></span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"square-functions"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>Now linear function spaces of (progressively more) shifted squares</span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>do something more interesting:</span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"square-runge"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>When we try to approximate the same function as before, the sampled</span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>values (and the rectangles) track the function progressively better</span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>and better, and the approximation function does not oscillate.</span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>Of course, we lost something in this exchange. The polynomial fits</span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>we obtained were smooth: this means that we had access to</span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>function derivatives, which are useful in a variety of settings. The</span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>function fits we got aren't even continuous; that's not ideal.</span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>Fortunately, this is a situation which we can easily fix by</span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>creating better "simple functions". Also, from now on, we will call these</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a>simple functions *reconstruction kernels*, or *kernels* for short.</span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>(Notice that the term kernel is used in statistics to denote a</span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>completely different notion. The confusion is most often avoided by</span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>noticing that reconstruction kernels take a single parameter while</span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>similarity kernels from statistics are always two-parameter functions</span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>that compare values.)</span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a><span class="fu">## B-Spline kernels</span></span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a><span class="in">    def b0(x):</span></span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= -1/2: return 0</span></span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &gt;= 1/2: return 0</span></span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a><span class="in">        return 1</span></span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a><span class="in">    def b1(x):</span></span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= -1: return 0</span></span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= 0:  return 1+x</span></span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a><span class="in">        if x &lt;= 1:  return 1-x</span></span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a><span class="in">        return 0</span></span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a><span class="in">    def b2(x):</span></span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a><span class="in">        # ...</span></span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>So, how do we create function spaces that aren't prone to oscillation,</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a>but allow smooth functions? We use kernels that are themselves</span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a>continuous, or smooth. In the examples below, we are creating</span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a>functions by giving weights $<span class="co">[</span><span class="ot">0.4, 0.3, 0.5, 0.7, 0.6</span><span class="co">]</span>$ to each of the</span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a>basis functions in order. Because the basis functions are different,</span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>the reconstructed function is itself different.</span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a><span class="fu">### B-Spline of order 0</span></span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline-0"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Linear (order-1) B-Spline</span></span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline-1"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a><span class="fu">### Quadratic (order-2) B-Spline</span></span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"bspline-2"</span> <span class="er">class</span><span class="ot">=</span><span class="st">"chart"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a>A proper discussion of reconstruction kernels is far beyond the scope</span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>of this (and any one) piece; see <span class="co">[</span><span class="ot">this</span><span class="co">](../b_splines/index.html)</span> piece</span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a>instead.</span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a>Note, though, that as the reconstruction kernels get smoother, so do</span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a>the reconstructions. This happens because of a trivial, but very</span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>important property of linear function spaces: since these are linear</span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a>spaces, function operations that are themselves linear will factor</span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a>through to the basis functions. For example, the derivative is a</span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>linear operator. As a result, the derivative of a function from a</span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a>linear function space is necessarily a member of a *different* linear</span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>function space, whose basis vectors are the derivatives of the basis</span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>vectors of the original function space:</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a>$$d/dx \left ( \sum_i c_i \phi_i(x) \right ) = \sum_i c_i \left (\frac{d \phi(x)}{dx} \right)$$</span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>The same thing happens for integrals, expectations, convolutions,</span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>etc. This makes linear function spaces very computationally</span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>convenient.</span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multi-dimensional linear function spaces</span></span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>So far, we've seen function spaces whose domain are the real numbers</span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>(a one-dimensional space). It is straightforward to extend the notion</span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>to multidimensional functions: we just change the domain of the</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>function to operate on $R^n$ instead of $R$. The only significant</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>change is that our reconstruction kernels need to be themselves</span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>two-dimensional.</span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a>Do note here a bit of terminological ambiguity: in this context, we</span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>are using "multi-dimensional" to refer to the domain of the function,</span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a>not to the dimension of the space (as in its rank).</span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a><span class="fu">### Separable kernels</span></span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>The most common way to create multi-dimensional reconstruction kernels</span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>is to do it one dimension at a time. Concretely speaking, the space of</span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>all possible multidimensional reconstruction kernels is very large,</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a>and one natural solution is to look for kernels that _factor_:</span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>$$K(x,y) = k_x(x) k_y(y)$$</span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>Using B-Splines as the separable filters is very common, and very</span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>convenient.</span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>TODO: Add illustrations of a simple 2D function using $\beta_0$,</span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a>$\beta_1$, $\beta_2$ as the separable filters.</span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a><span class="fu"># More reading</span></span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="co">[</span><span class="ot">2D example</span><span class="co">](two-d/)</span>.</span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Mitchell and Netravalli,</span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a>  <span class="co">[</span><span class="ot">Reconstruction Filters in Computer Graphics</span><span class="co">](https://dl.acm.org/citation.cfm?id=378514)</span>,</span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>  SIGGRAPH '88. A classic in the area.</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Moller et al,</span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>  <span class="co">[</span><span class="ot">Design of Accurate and Smooth filters for function</span><span class="co">](http://ieeexplore.ieee.org/document/729596/)</span>,</span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>  VolVis 1998. How to design filters in order to get good spatial</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>  properties out of them.</span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span><span class="ot"> type=</span><span class="st">"module"</span> <span class="er">src</span><span class="ot">=</span><span class="st">"./main.js"</span><span class="kw">&gt;&lt;/script&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

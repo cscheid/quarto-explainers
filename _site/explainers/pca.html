@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Principal Components Analysis</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../site_libs/quarto-html/quarto.js"></script>
+  <script src="../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#two-ways-to-pca" class="nav-link active" data-scroll-target="#two-ways-to-pca">Two ways to PCA</a></li>
+<li><a href="#pca-through-the-covariance-matrix" class="nav-link" data-scroll-target="#pca-through-the-covariance-matrix">PCA through the covariance matrix</a></li>
+<li><a href="#pca-through-a-matrix-of-inner-products" class="nav-link" data-scroll-target="#pca-through-a-matrix-of-inner-products">PCA through a matrix of inner products</a>
+<ul class="collapse">
+<li><a href="#pca-via-the-svd." class="nav-link" data-scroll-target="#pca-via-the-svd.">PCA via the SVD.</a></li>
+<li><a href="#but-why" class="nav-link" data-scroll-target="#but-why">But why</a></li>
+<li><a href="#odds-and-ends" class="nav-link" data-scroll-target="#odds-and-ends">Odds and ends</a>
+<ul class="collapse">
+<li><a href="#the-centering-matrix" class="nav-link" data-scroll-target="#the-centering-matrix">The Centering Matrix</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a>
+<ul class="collapse">
+<li><a href="#acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
+</ul></li>
+<li><a href="#footnotes" class="nav-link" data-scroll-target="#footnotes">Footnotes</a></li>
+</ul>
+</nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block"><div><h1 class="title">Principal Components Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</header>
+
+<p>Some datasets are naturally <em>redundant</em>. Loosely speaking, each element of the set contains “more information than necessary”. For example, imagine that the dataset you’re collecting has, in one column, daily temperatures in degrees Fahrenheit, and in another column, daily temperatures in degrees Celsius. In this case, all of the “signal” in these two columns actually happens in a <em>lower-dimensional</em> portion of the original space.</p>
+<p>And since we tend to prefer simpler versions of the dataset, we would like to find out how to transform the original dataset to a representation with smaller dimension, but still much (or, in the extreme example above, all) of the signal. Principal Components Analysis is one the most fundamental tools to find such transformations.</p>
+<p>In order to make things concrete, let’s assume that the dataset has <span class="math inline">\(m\)</span> elements, each containing <span class="math inline">\(n\)</span> attributes, and that we lay these out in a matrix <span class="math inline">\(X\)</span> that has <span class="math inline">\(m\)</span> rows and <span class="math inline">\(n\)</span> columns: <span class="math inline">\(X \in R^{m,n}\)</span>.</p>
+<p>PCA will return two things that are both useful. First, PCA gives us back a smaller version of the dataset: instead of having <span class="math inline">\(n\)</span> attributes, we will have <span class="math inline">\(k\)</span> attributes, and we will generally choose <span class="math inline">\(k\)</span> to be much smaller than <span class="math inline">\(n\)</span>. Second, PCA will give us the transformation that takes any value in the input space into a value in the output space. In addition, this transformation is <em>linear</em>: a matrix that takes vectors from <span class="math inline">\(n\)</span>-dimensional space to <span class="math inline">\(k\)</span>-dimensional space.</p>
+<section id="two-ways-to-pca" class="level2">
+<h2 class="anchored" data-anchor-id="two-ways-to-pca">Two ways to PCA</h2>
+<p>If you’ve read about PCA before, you might remember something like “the principal components are the eigenvectors of the covariance matrix”. This statement is true, but it doesn’t actually help you understand what the PCA is doing. Instead, we will look at the PCA in two ways.</p>
+</section>
+<section id="pca-through-the-covariance-matrix" class="level1">
+<h1>PCA through the covariance matrix</h1>
+<p>Given a dataset represented as above, we can define the <em>covariance</em> between any two attributes of the dataset. If we think of each column of the matrix $ X_{*i} = [ x_{0,i}, x_{1,i}, , x_{n-1,i} ] $ as a vector (storing the values of these attributes), then the covariance between any two attributes is given by</p>
+<p><span class="math display">\[\Cov[X_{*i}, X_{*j}] = E[(X_{*i} - E[X_{*i}])(X_{*j} - E[X_{*j}])]\]</span></p>
+<p>To make our analysis easier, let’s work with a slightly different version of the dataset, <span class="math inline">\(\tilde{X}\)</span>, where we will subtract the average column value from each column:</p>
+<p><span class="math display">\[\tilde{X}_{i,j} = X_{i,j} - E[X_{*i}],\]</span></p>
+<p>and so</p>
+<p><span class="math display">\[E[\tilde{X}_{*i}] = 0.\]</span></p>
+<p>Now, it’s easy to see that the covariance matrix of <span class="math inline">\(\tilde{X}\)</span> has a simpler expression:</p>
+<p><span class="math display">\[\begin{align}\Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &amp;=&amp; E[(\tilde{X}_{*i} - E[\tilde{X}_{*i}])(\tilde{X}_{*j} - E[\tilde{X}_{*j}])]\\\Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &amp;=&amp; E[\tilde{X}_{*i} \tilde{X}_{*j}]\\m \Cov[\tilde{X}_{*i}, \tilde{X}_{*j}] &amp;=&amp; m \tilde{X}^T \tilde{X}\end{align}\]</span></p>
+<p><span class="math inline">\(\tilde{X}^T \tilde{X}\)</span> is a symmetric, <span class="math inline">\(n \times n\)</span> matrix.</p>
+<p>Now let’s consider the expression <span class="math inline">\(v^T \tilde{X}^T \tilde{X} v\)</span>: this is equal to <span class="math inline">\(\langle \tilde{X} v, \tilde{X}v \rangle\)</span>, and so equal to <span class="math inline">\(|| \tilde{X} v ||^2\)</span>, which is never a negative value. This means <span class="math inline">\(\tilde{X}^T \tilde{X}\)</span> cannot have a negative eigenvalue. It also means that we can then write <span class="math inline">\(\tilde{X}^T \tilde{X}\)</span> as</p>
+<p><span class="math display">\[\tilde{X}^T \tilde{X} = U \Lambda U^T,\]</span></p>
+<p>where <span class="math inline">\(U\)</span> is an <em>orthogonal</em> matrix (a rotation), and <span class="math inline">\(\Lambda\)</span> is a diagonal matrix of non-negative values, sorted from largest to smallest <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. This, in turn, yields:</p>
+<p><span class="math display">\[\tilde{X}^T \tilde{X} = U \Lambda^{1/2} \Lambda^{1/2} U^T,\]</span></p>
+<p>Now consider the expression <span class="math inline">\(\tilde{X} U\)</span>. This expression rotates all of the vectors in <span class="math inline">\(\tilde{X}\)</span> (so that doesn’t change the lengths of each row vector). But now notice that the above equation leads to</p>
+<p><span class="math display">\[\begin{align}U^T \tilde{X}^T \tilde{X} U &amp;=&amp; U^T U \Lambda U^T U\\ U^T \tilde{X}^T \tilde{X} U &amp;=&amp; \Lambda.\end{align}\]</span></p>
+<p>So if we rotate the rows of <span class="math inline">\(\tilde{X}\)</span> by U, <em>its</em> covariance matrix is diagonal! That means that after rotating <span class="math inline">\(\tilde{X}\)</span> the attribute vectors (ie. the columns) are orthogonal to each other.</p>
+<p>Now imagine if we created a matrix <span class="math inline">\(\hat{U}\)</span> equal to <span class="math inline">\(U\)</span>, except that it lacks the very last column. <span class="math inline">\(\hat{U}\)</span> is a projection matrix: roughly speaking, it sends vectors from <span class="math inline">\(R^n\)</span> to <span class="math inline">\(R^{n-1}\)</span> in such a way that no vector increases in length. In that case <span class="math inline">\(\tilde{X} \hat{U}\)</span> will be an <span class="math inline">\(m \times (n-1)\)</span> matrix.</p>
+<p>Now, let’s think of the <em>sum of squared lengths of the rows (“sums of squares” for short, or SS) in <span class="math inline">\(\tilde{X}\hat{U}\)</span></em>, and compare to the SS of <span class="math inline">\(\tilde{X}\)</span> (which is itself equal to the sum of squares of <em>entries</em> in each value in the matrix).</p>
+<p>The remarkable feature of <span class="math inline">\(\hat{U}\)</span> is that, <em>among all projection matrices from <span class="math inline">\(R^n\)</span> to <span class="math inline">\(R^{n-1}\)</span></em>, <span class="math inline">\(\hat{U}\)</span> is such that the SS of <span class="math inline">\(\tilde{X}\hat{U}\)</span> is as close as possible to the SS of <span class="math inline">\(\tilde{X}\)</span> itself. This happens, essentially, because <strong>the SS of <span class="math inline">\(\tilde{X}U\)</span> is equal to that of <span class="math inline">\(\Lambda^{1/2}\)</span></strong>. Remember that <span class="math inline">\(U\)</span> is a rotation, so it doesn’t change the squared lengths of the rows: a right-multiplication by <span class="math inline">\(U\)</span> doesn’t change the SS of <span class="math inline">\(\tilde{X}\)</span>!</p>
+<p>In other words: among all possible projections which drop a column from <span class="math inline">\(\tilde{X}\)</span>, we need to pick one that makes the SS of the projected matrix equivalent to dropping the smallest value from <span class="math inline">\(\Lambda^{1/2}\)</span> — if we don’t, then we could have picked a better projection! In the same way, if we wanted a projection to one-dimensional space, then we would pick the first column of <span class="math inline">\(U\)</span>, because that would corresponds to the largest value in <span class="math inline">\(\Lambda^{1/2}\)</span>, and so would be the “best” single one-dimensional projection (in the sense of preserving sums of squared lengths of the dataset).</p>
+<p>The <span class="math inline">\(i\)</span>-th column of <span class="math inline">\(U\)</span> is known as the <strong><span class="math inline">\(i\)</span>-th principal direction</strong>, and the attributes found by multiplying <span class="math inline">\(\tilde{X}\)</span> by these columns are the <strong>principal components</strong> of <span class="math inline">\(X\)</span>.</p>
+<p>The algorithm to compute the principal components of a dataset is, then:</p>
+<ol type="1">
+<li>Let <span class="math inline">\(X\)</span> be a <span class="math inline">\(m \times n\)</span>-dimensional matrix, where each row is an entry from the dataset.</li>
+<li>Let <span class="math inline">\(\tilde{X}\)</span> be the matrix where we subtract the column means from each column.</li>
+<li>Let <span class="math inline">\(M = \tilde{X}^T \tilde{X}\)</span> be the matrix <span class="math inline">\(M = (m_{ij})\)</span> of covariances between the <span class="math inline">\(i\)</span>-th and <span class="math inline">\(j\)</span>-th column of <span class="math inline">\(\tilde{X}\)</span>. <span class="math inline">\(M\)</span> is an <span class="math inline">\(n \times n\)</span> matrix.</li>
+<li>Let <span class="math inline">\(U\)</span> be the matrix such that <span class="math inline">\(M = U \Lambda U^T\)</span>, where <span class="math inline">\(U\)</span> is orthogonal, and <span class="math inline">\(\Lambda\)</span> has diagonal entries ordered from largest to smallest.</li>
+<li>The principal components of the dataset are (in order) the columns of <span class="math inline">\(\tilde{X} U\)</span>.</li>
+</ol>
+</section>
+<section id="pca-through-a-matrix-of-inner-products" class="level1">
+<h1>PCA through a matrix of inner products</h1>
+<p>Now, let’s consider this seemingly different approach:</p>
+<ol type="1">
+<li>Let <span class="math inline">\(X\)</span> be a <span class="math inline">\(m \times n\)</span>-dimensional matrix, where each row is an entry from the dataset.</li>
+<li>Let <span class="math inline">\(\tilde{X}\)</span> be the matrix where we subtract the column means from each column.</li>
+<li>Let <span class="math inline">\(M = \tilde{X} \tilde{X}^T\)</span> be the matrix <span class="math inline">\(M = (m_{ij})\)</span> of inner products between the <span class="math inline">\(i\)</span>-th and <span class="math inline">\(j\)</span>-th rows of <span class="math inline">\(\tilde{X}\)</span>. <span class="math inline">\(M\)</span> is an <span class="math inline">\(m \times m\)</span> matrix.</li>
+<li>Let <span class="math inline">\(U\)</span> be the matrix such that <span class="math inline">\(M = U \Lambda U^T\)</span>, where <span class="math inline">\(U\)</span> is orthogonal, and <span class="math inline">\(\Lambda\)</span> has diagonal entries ordered from largest to smallest.</li>
+<li>The principal components of the dataset are (in order) the columns of <span class="math inline">\(U \Lambda^{1/2}\)</span>.</li>
+</ol>
+<p>Say what? How can these two things be the same?</p>
+<section id="pca-via-the-svd." class="level2">
+<h2 class="anchored" data-anchor-id="pca-via-the-svd.">PCA via the SVD.</h2>
+<p>The easiest way to see that these two approaches are identical is to consider the <strong>singular value decomposition</strong> (SVD) of <span class="math inline">\(M\)</span>. The SVD of a matrix is a bit like the eigendecomposition, but it is more general: the SVD exists for <em>any</em> matrix, rectangular or square, symmetric or not. Concretely, the SVD of a <span class="math inline">\(m \times n\)</span> matrix <span class="math inline">\(M\)</span> is</p>
+<p><span class="math display">\[M = U \Sigma V^T,\]</span></p>
+<p>or a set of three matrices: <span class="math inline">\(U\)</span> is an orthogonal <span class="math inline">\(m \times m\)</span> matrix (whose columns are known as the <strong>left singular vectors</strong>); <span class="math inline">\(\Sigma\)</span> is a diagonal, rectangular <span class="math inline">\(m \times n\)</span> matrix with non-negative, non-increasing values in the diagonal (known as the <strong>singular values</strong>), and <span class="math inline">\(V^T\)</span> is an <span class="math inline">\(n \times n\)</span> orthogonal matrix (whose rows are known as the <strong>right singular vectors</strong>). Like the eigendecomposition, the SVD has two orthogonal matrices and a diagonal matrix. Unlike the eigendecomposition, the orthogonal matrices in the SVD are different from each other’s transpose, and they might even have different dimensions. The entries of the diagonal matrix of the SVD are never negative, unlike eigendecomposition. Finally, the SVD of any matrix always exists, but even some square matrices lack an eigendecomposition.</p>
+<p>But enough about the SVD: let’s put it to use. Specifically, let’s look at the SVD of <span class="math inline">\(\tilde{X}\)</span>:</p>
+<p><span class="math display">\[\begin{align}\tilde{X} &amp;=&amp; U \Sigma V^T \\ \tilde{X} \tilde{X}^T &amp; = &amp; U \Sigma V^T V \Sigma^T U^T \\ \tilde{X}^T \tilde{X} &amp;=&amp; V \Sigma^T U^T U \Sigma V^T \end{align}\]</span></p>
+<p>Since <span class="math inline">\(U\)</span> and <span class="math inline">\(V\)</span> are orthogonal, a lot of terms cancel:</p>
+<p><span class="math display">\[\begin{align} \tilde{X} \tilde{X}^T &amp; = &amp; U \Sigma_1^2 U^T \\ \tilde{X}^T \tilde{X} &amp;=&amp; V \Sigma_2^2 V^T \end{align}\]</span></p>
+<p>(We use <span class="math inline">\(\Sigma_1^2\)</span> and <span class="math inline">\(\Sigma_2^2\)</span> to differentiate them since the former is <span class="math inline">\(m \times m\)</span>, and the latter is <span class="math inline">\(n \times n\)</span>.) From here, we can see that there are a lot of relationships between the SVD of <span class="math inline">\(\tilde{X}\)</span> and the eigendecompositions of <span class="math inline">\(\tilde{X}\tilde{X}^T\)</span>, and that of <span class="math inline">\(\tilde{X}^T\tilde{X}\)</span>. Specifically, the singular values of <span class="math inline">\(\tilde{X}\)</span> are equal to the square roots of the eigenvalues of both <span class="math inline">\(\tilde{X}\tilde{X}^T\)</span> and <span class="math inline">\(\tilde{X}^T\tilde{X}\)</span>; the left singular vectors of <span class="math inline">\(\tilde{X}\)</span> are the eigenvectors of <span class="math inline">\(\tilde{X}\tilde{X}^T\)</span>, and the right singular vectors are the eigenvectors of <span class="math inline">\(\tilde{X}^T\tilde{X}\)</span>.</p>
+<p>Putting all of these things together, and multiplying both sides of the SVD <span class="math inline">\(\tilde{X} = U \Sigma V^T\)</span> on the right by <span class="math inline">\(V\)</span>, we get:</p>
+<p><span class="math display">\[\begin{align} \tilde{X} V &amp;=&amp; U \Sigma V^T V \\ \tilde{X} V &amp;=&amp; U \Sigma \end{align}\]</span></p>
+<p>Now the left side of the equation is the result of PCA by covariance-matrix algorithm, and the right side of the equation is the result of PCA by the inner-product algorithm! So they are truly the same thing.</p>
+</section>
+<section id="but-why" class="level2">
+<h2 class="anchored" data-anchor-id="but-why">But why</h2>
+<p>The computation of the PCA via eigenvectors of covariance matrices is much more intuitive, so why do we care about these two different approaches?</p>
+<p>The reason is a little strange, but extremely practical. Sometimes, we don’t have access to the rows or columns of <span class="math inline">\(X\)</span>, but we <strong>do</strong> have access to the inner products. It is extremely useful to know that in these scenarios we can still recover principal components! This is the central insight of <a href="mds.html#Classical%20MDS">classical multidimensional scaling</a>.</p>
+</section>
+<section id="odds-and-ends" class="level2">
+<h2 class="anchored" data-anchor-id="odds-and-ends">Odds and ends</h2>
+<section id="the-centering-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="the-centering-matrix">The Centering Matrix</h3>
+<p>The procedure we’ve used above to convert <span class="math inline">\(X\)</span> to <span class="math inline">\(\tilde{X}\)</span> can be represented by a matrix. This is sometimes useful to know, especially when the centering operation happens in the middle of other matrix manipulation. Specifically, if <span class="math inline">\(H = (I - \vec{1}\vec{1}^T / m)\)</span>, where <span class="math inline">\(m\)</span> is the number of rows of <span class="math inline">\(X\)</span>, and <span class="math inline">\(\vec{1}\)</span> is an <span class="math inline">\(m\)</span>-dimensional vector of all ones <span class="math inline">\((1, 1, \cdots, 1)\)</span>, then</p>
+<p><span class="math display">\[\tilde{X} = H X.\]</span></p>
+<p>It is easy to see why this is the case. Expand the definition:</p>
+<p><span class="math display">\[\begin{align}\tilde{X} &amp;=&amp; (I - \vec{1}\vec{1}^T / m) X \\ \tilde{X} &amp;=&amp; X - \vec{1}\vec{1}^T X / m,\end{align}\]</span></p>
+<p>and now note that <span class="math inline">\(\vec{1}^T X\)</span> is a vector that stores the column sums of <span class="math inline">\(X\)</span>, and so <span class="math inline">\(\vec{1}^T X / m\)</span> stores the column averages. In addition, <span class="math inline">\(\vec{1} v\)</span> creates a matrix with <span class="math inline">\(m\)</span> copies of <span class="math inline">\(v\)</span>. Putting this back into the expression we see that the column averages are copied into a matrix of the same size as <span class="math inline">\(X\)</span>, and then subtracted from <span class="math inline">\(X\)</span> itself.</p>
+<p>An interesting feature of the centering matrix is that you can write it from the left side (in which case the vectors are as big as there are rows in <span class="math inline">\(X\)</span>), and <span class="math inline">\(HX\)</span> will be centering the <strong>columns</strong> of X. But you can also write it from the right side, in which case the vectors are as big as there are columns in <span class="math inline">\(X\)</span>, and <span class="math inline">\(XH\)</span> will then be centering the <strong>rows</strong> of X.</p>
+</section>
+</section>
+</section>
+<section id="exercises" class="level1">
+<h1>Exercises</h1>
+<ol type="1">
+<li><p>You are given <span class="math inline">\(M\)</span>, for which you know that <span class="math inline">\(M = U \Lambda U^T\)</span>, where <span class="math inline">\(U\)</span> is orthogonal, and <span class="math inline">\(\Lambda\)</span> is diagonal. Show that the columns of <span class="math inline">\(U\)</span> are eigenvectors of <span class="math inline">\(M\)</span>, and the entries in the diagonal of <span class="math inline">\(\Lambda\)</span> are the eigenvalues.</p></li>
+<li><p>Show that the sum of squared lengths of <span class="math inline">\(\tilde{X}\)</span> is exactly the total variance in the dataset, which is the sum of the squared distance from each point to the average value.</p></li>
+<li><p>We talked about a <em>set</em> of data, but used a <em>matrix</em> in our computations. Set elements are unordered, but matrix rows have a specific order. Show that the PCA of a dataset is independent of the choice of ordering of rows in the matrix <span class="math inline">\(X\)</span>.</p></li>
+<li><p>Finish the argument that any matrix <span class="math inline">\(M\)</span> that can be written as <span class="math inline">\(M = X^T X\)</span> cannot have a negative eigenvalue.</p></li>
+</ol>
+<section id="acknowledgments" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
+<p>Mingwei Li provided careful proofreading and exercise suggestions.</p>
+</section>
+</section>
+<section id="footnotes" class="level1">
+<h1>Footnotes</h1>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label" data-anchor-id="footnotes">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Principal Components Analysis</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Some datasets are naturally *redundant*. Loosely speaking, each</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>element of the set contains "more information than necessary". For</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>example, imagine that the dataset you're collecting has, in one</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>column, daily temperatures in degrees Fahrenheit, and in another</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>column, daily temperatures in degrees Celsius. In this case, all of the</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>"signal" in these two columns actually happens in a</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>*lower-dimensional* portion of the original space.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>And since we tend to prefer simpler versions of the dataset, we would</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>like to find out how to transform the original dataset to a</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>representation with smaller dimension, but still much (or, in the</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>extreme example above, all) of the signal. Principal Components</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Analysis is one the most fundamental tools to find such</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>transformations.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>In order to make things concrete, let's assume that the dataset has</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>$m$ elements, each containing $n$ attributes, and that we lay these</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>out in a matrix $X$ that has $m$ rows and $n$ columns: $X \in</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>R^{m,n}$. </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>PCA will return two things that are both useful. First, PCA gives us</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>back a smaller version of the dataset: instead of having $n$</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>attributes, we will have $k$ attributes, and we will generally choose</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>$k$ to be much smaller than $n$. Second, PCA will give us the</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>transformation that takes any value in the input space into a value</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>in the output space. In addition, this transformation is</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>*linear*: a matrix that takes vectors from $n$-dimensional space</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>to $k$-dimensional space.</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Two ways to PCA</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>If you've read about PCA before, you might remember something like</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>"the principal components are the eigenvectors of the covariance</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>matrix". This statement is true, but it doesn't actually help you</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>understand what the PCA is doing. Instead, we will look at the PCA </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>in two ways.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu"># PCA through the covariance matrix</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Given a dataset represented as above, we can define the *covariance*</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>between any two attributes of the dataset. If we think of each column</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>of the matrix $ X_{*i} = <span class="co">[</span><span class="ot"> x_{0,i}, x_{1,i}, \cdots, x_{n-1,i} </span><span class="co">]</span> $ </span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>as a vector (storing the values of these attributes),</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>then the covariance between any two attributes is given by</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>$$\Cov<span class="co">[</span><span class="ot">X_{*i}, X_{*j}</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">(X_{*i} - E[X_{*i}])(X_{*j} - E[X_{*j}])</span><span class="co">]</span>$$</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>To make our analysis easier, let's work with a slightly different</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>version of the dataset, $\tilde{X}$, where we will subtract the</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>average column value from each column: </span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>$$\tilde{X}_{i,j} = X_{i,j} - E[X_{*i}],$$</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>and so</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>$$E<span class="co">[</span><span class="ot">\tilde{X}_{*i}</span><span class="co">]</span> = 0.$$</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>Now, it's easy to see that the covariance matrix of $\tilde{X}$ has a</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>simpler expression:</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>$$\begin{align}\Cov<span class="co">[</span><span class="ot">\tilde{X}_{*i}, \tilde{X}_{*j}</span><span class="co">]</span> &amp;=&amp; E<span class="co">[</span><span class="ot">(\tilde{X}_{*i} - E[\tilde{X}_{*i}])(\tilde{X}_{*j} - E[\tilde{X}_{*j}])</span><span class="co">]</span><span class="sc">\\</span>\Cov<span class="co">[</span><span class="ot">\tilde{X}_{*i}, \tilde{X}_{*j}</span><span class="co">]</span> &amp;=&amp; E<span class="co">[</span><span class="ot">\tilde{X}_{*i} \tilde{X}_{*j}</span><span class="co">]</span><span class="sc">\\</span>m \Cov<span class="co">[</span><span class="ot">\tilde{X}_{*i}, \tilde{X}_{*j}</span><span class="co">]</span> &amp;=&amp; m \tilde{X}^T \tilde{X}\end{align}$$</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>$\tilde{X}^T \tilde{X}$ is a symmetric, $n \times n$ matrix. </span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>Now let's consider the expression $v^T \tilde{X}^T \tilde{X} v$: this is</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>equal to $\langle \tilde{X} v, \tilde{X}v \rangle$, and so equal to</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>$|| \tilde{X} v ||^2$, which is never a negative value. This means</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>$\tilde{X}^T \tilde{X}$ cannot have a negative eigenvalue. It also means that we can then write $\tilde{X}^T \tilde{X}$ as</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>$$\tilde{X}^T \tilde{X} = U \Lambda U^T,$$</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>where $U$ is an *orthogonal* matrix (a rotation), and $\Lambda$ is a diagonal matrix of non-negative values, sorted from largest to smallest <span class="ot">[^1]</span>. This, in turn, yields:</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>$$\tilde{X}^T \tilde{X} = U \Lambda^{1/2} \Lambda^{1/2} U^T,$$</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Now consider the expression $\tilde{X} U$. This expression rotates all</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>of the vectors in $\tilde{X}$ (so that doesn't change the lengths of</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>each row vector). But now notice that the above equation leads to</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>$$\begin{align}U^T \tilde{X}^T \tilde{X} U &amp;=&amp; U^T U \Lambda U^T U<span class="sc">\\</span> U^T \tilde{X}^T \tilde{X} U &amp;=&amp; \Lambda.\end{align}$$</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>So if we rotate the rows of $\tilde{X}$ by U, *its* covariance matrix</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>is diagonal! That means that after rotating $\tilde{X}$ the attribute</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>vectors (ie. the columns) are orthogonal to each other.</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>Now imagine if we created a matrix $\hat{U}$ equal to $U$, except that</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>it lacks the very last column. $\hat{U}$ is a projection matrix:</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>roughly speaking, it sends vectors from $R^n$ to $R^{n-1}$ in such a</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>way that no vector increases in length. In that case $\tilde{X}</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>\hat{U}$ will be an $m \times (n-1)$ matrix.</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>Now, let's think of the *sum of squared lengths of the rows ("sums of</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>squares" for short, or SS) in $\tilde{X}\hat{U}$*, and compare to the</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>SS of $\tilde{X}$ (which is itself equal to the sum of squares of</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>*entries* in each value in the matrix).</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>The remarkable feature of $\hat{U}$ is that, *among all projection</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>matrices from $R^n$ to $R^{n-1}$*, $\hat{U}$ is such that the SS of</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>$\tilde{X}\hat{U}$ is as close as possible to the SS of $\tilde{X}$</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>itself. This happens, essentially, because **the SS of $\tilde{X}U$ is</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>equal to that of $\Lambda^{1/2}$**. Remember that $U$ is a rotation,</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>so it doesn't change the squared lengths of the rows: a</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>right-multiplication by $U$ doesn't change the SS of $\tilde{X}$!</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>In other words: among all possible projections which drop a column</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>from $\tilde{X}$, we need to pick one that makes the SS of the</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>projected matrix equivalent to dropping the smallest value from</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>$\Lambda^{1/2}$ --- if we don't, then we could have picked a better</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>projection!  In the same way, if we wanted a projection to</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>one-dimensional space, then we would pick the first column of $U$,</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>because that would corresponds to the largest value in</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>$\Lambda^{1/2}$, and so would be the "best" single one-dimensional</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>projection (in the sense of preserving sums of squared lengths of the</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>dataset).</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>The $i$-th column of $U$ is known as the **$i$-th principal</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>direction**, and the attributes found by multiplying $\tilde{X}$ by</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>these columns are the **principal components** of $X$.</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>The algorithm to compute the principal components of a dataset is, then:</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Let $X$ be a $m \times n$-dimensional matrix, where each row is an entry from</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>   the dataset.</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Let $\tilde{X}$ be the matrix where we subtract the column means from each column.</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Let $M = \tilde{X}^T \tilde{X}$ be the matrix $M = (m_{ij})$ of covariances between the $i$-th and $j$-th column of $\tilde{X}$. $M$ is an $n \times n$ matrix.</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Let $U$ be the matrix such that $M = U \Lambda U^T$, where $U$ is orthogonal, and $\Lambda$ has diagonal entries ordered from largest to smallest.</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The principal components of the dataset are (in order) the columns of $\tilde{X} U$.</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="fu"># PCA through a matrix of inner products</span></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>Now, let's consider this seemingly different approach:</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Let $X$ be a $m \times n$-dimensional matrix, where each row is an entry from the dataset.</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Let $\tilde{X}$ be the matrix where we subtract the column means from each column.</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Let $M = \tilde{X} \tilde{X}^T$ be the matrix $M = (m_{ij})$ of inner products between the $i$-th and $j$-th rows of $\tilde{X}$. $M$ is an $m \times m$ matrix.</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Let $U$ be the matrix such that $M = U \Lambda U^T$, where $U$ is orthogonal, and $\Lambda$ has diagonal entries ordered from largest to smallest.</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>The principal components of the dataset are (in order) the columns of $U \Lambda^{1/2}$.</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>Say what? How can these two things be the same?</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="fu">## PCA via the SVD.</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>The easiest way to see that these two approaches are identical is to</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>consider the **singular value decomposition** (SVD) of $M$. The SVD of</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>a matrix is a bit like the eigendecomposition, but it is more general:</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>the SVD exists for *any* matrix, rectangular or square, symmetric or</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>not. Concretely, the SVD of a $m \times n$ matrix $M$ is </span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>$$M = U \Sigma V^T,$$</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>or a set of three matrices: $U$ is an orthogonal $m \times m$ matrix (whose columns are known as the **left singular vectors**);</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>$\Sigma$ is a diagonal, rectangular $m \times n$ matrix with</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>non-negative, non-increasing values in the diagonal (known as the **singular values**), and $V^T$ is an</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>$n \times n$ orthogonal matrix (whose rows are known as the **right singular vectors**). Like the eigendecomposition, the SVD</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>has two orthogonal matrices and a diagonal matrix. Unlike the</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>eigendecomposition, the orthogonal matrices in the SVD are different</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>from each other's transpose, and they might even have different</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>dimensions. The entries of the diagonal matrix of the SVD are never</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>negative, unlike eigendecomposition. Finally, the SVD of any matrix</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>always exists, but even some square matrices lack an</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>eigendecomposition.</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>But enough about the SVD: let's put it to use. Specifically, let's look</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>at the SVD of $\tilde{X}$:</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>$$\begin{align}\tilde{X} &amp;=&amp; U \Sigma V^T <span class="sc">\\</span> \tilde{X} \tilde{X}^T &amp; = &amp; U \Sigma V^T V \Sigma^T U^T <span class="sc">\\</span> \tilde{X}^T \tilde{X} &amp;=&amp; V \Sigma^T U^T U \Sigma V^T \end{align}$$</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>Since $U$ and $V$ are orthogonal, a lot of terms cancel:</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>$$\begin{align} \tilde{X} \tilde{X}^T &amp; = &amp; U \Sigma_1^2 U^T <span class="sc">\\</span> \tilde{X}^T \tilde{X} &amp;=&amp; V \Sigma_2^2 V^T \end{align}$$</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>(We use $\Sigma_1^2$ and $\Sigma_2^2$ to differentiate them since the former</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>is $m \times m$, and the latter is $n \times n$.)</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>From here, we can see that there are a lot of relationships between</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>the SVD of $\tilde{X}$ and the eigendecompositions of</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>$\tilde{X}\tilde{X}^T$, and that of $\tilde{X}^T\tilde{X}$.</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>Specifically, the singular values of $\tilde{X}$ are equal to the square roots of the eigenvalues of both $\tilde{X}\tilde{X}^T$ and $\tilde{X}^T\tilde{X}$; the left singular vectors of $\tilde{X}$ are the eigenvectors of $\tilde{X}\tilde{X}^T$, and the right singular vectors are the eigenvectors of $\tilde{X}^T\tilde{X}$.</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>Putting all of these things together, and multiplying both sides of the SVD $\tilde{X} = U \Sigma V^T$ on the right by $V$, we get:</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>$$\begin{align} \tilde{X} V &amp;=&amp; U \Sigma V^T V <span class="sc">\\</span> \tilde{X} V &amp;=&amp; U \Sigma \end{align}$$</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>Now the left side of the equation is the result of PCA by</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>covariance-matrix algorithm, and the right side of the equation is the</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>result of PCA by the inner-product algorithm! So they are truly the</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>same thing.</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## But why</span></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>The computation of the PCA via eigenvectors of covariance matrices is</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>much more intuitive, so why do we care about these two different</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>approaches? </span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>The reason is a little strange, but extremely practical. Sometimes, we</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>don't have access to the rows or columns of $X$, but we **do** have</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>access to the inner products. It is extremely useful to know that in</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>these scenarios we can still recover principal components! This is the central insight of <span class="co">[</span><span class="ot">classical multidimensional scaling</span><span class="co">](mds.html#Classical%20MDS)</span>.</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="fu">## Odds and ends</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Centering Matrix</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>The procedure we've used above to convert $X$ to $\tilde{X}$ can be</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>represented by a matrix. This is sometimes useful to know, especially</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>when the centering operation happens in the middle of other matrix</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>manipulation. Specifically, if $H = (I - \vec{1}\vec{1}^T / m)$, where</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>$m$ is the number of rows of $X$, and $\vec{1}$ is an</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>$m$-dimensional vector of all ones $(1, 1, \cdots, 1)$, then</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>$$\tilde{X} = H X.$$</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>It is easy to see why this is the case. Expand the definition:</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>$$\begin{align}\tilde{X} &amp;=&amp; (I - \vec{1}\vec{1}^T / m) X <span class="sc">\\</span> \tilde{X} &amp;=&amp; X - \vec{1}\vec{1}^T X / m,\end{align}$$</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>and now note that $\vec{1}^T X$ is a vector that stores the column</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>sums of $X$, and so $\vec{1}^T X / m$ stores the column averages. In</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>addition, $\vec{1} v$ creates a matrix with $m$ copies of $v$. Putting</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>this back into the expression we see that the column averages are</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>copied into a matrix of the same size as $X$, and then subtracted from</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>$X$ itself.</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>An interesting feature of the centering matrix is that you can write</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>it from the left side (in which case the vectors are as big as there</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>are rows in $X$), and $HX$ will be centering the **columns** of X. But</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>you can also write it from the right side, in which case the vectors</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>are as big as there are columns in $X$, and $XH$ will then be</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>centering the **rows** of X.</span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exercises</span></span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>You are given $M$, for which you know that $M = U \Lambda U^T$,</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>   where $U$ is orthogonal, and $\Lambda$ is diagonal. Show that the</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>   columns of $U$ are eigenvectors of $M$, and the entries in the</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>   diagonal of $\Lambda$ are the eigenvalues.</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Show that the sum of squared lengths of $\tilde{X}$ is exactly the</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>   total variance in the dataset, which is the sum of the squared</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>   distance from each point to the average value.</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>We talked about a *set* of data, but used a *matrix* in our</span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>   computations. Set elements are unordered, but matrix rows have a</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>   specific order. Show that the PCA of a dataset is independent of</span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>   the choice of ordering of rows in the matrix $X$.</span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Finish the argument that any matrix $M$ that can be written as $M =</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>   X^T X$ cannot have a negative eigenvalue.</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a><span class="fu">## Acknowledgments</span></span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>Mingwei Li provided careful proofreading and exercise suggestions.</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="fu"># Footnotes</span></span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>The decomposition of a matrix $M$ into $M = U \Lambda U^T$, that is, into an orthogonal matrix, a diagonal matrix, and the inverse of the same orthogonal matrix is known as a "diagonalization" of a matrix. In this form, it should be easy to see that the columns of $U$ are the eigenvectors of $M$, and the diagonal entries of $\Lambda$ are the eigenvectors (so this is also often known as an "eigendecomposition").</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</section>
+<section class="footnotes" role="doc-endnotes"><h2>Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>The decomposition of a matrix <span class="math inline">\(M\)</span> into <span class="math inline">\(M = U \Lambda U^T\)</span>, that is, into an orthogonal matrix, a diagonal matrix, and the inverse of the same orthogonal matrix is known as a “diagonalization” of a matrix. In this form, it should be easy to see that the columns of <span class="math inline">\(U\)</span> are the eigenvectors of <span class="math inline">\(M\)</span>, and the diagonal entries of <span class="math inline">\(\Lambda\)</span> are the eigenvectors (so this is also often known as an “eigendecomposition”).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>
